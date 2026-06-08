@@ -1,21 +1,22 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { authOptions, resolveSessionUserId } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/lib/models/Conversation';
 
-export async function GET(req, { params }) {
+export async function GET(req, context) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user?.id) {
+    const userId = await resolveSessionUserId(session);
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = await context.params;
     await connectDB();
     const conversation = await Conversation.findOne({
       _id: id,
-      userId: session.user.id,
+      userId,
     });
 
     if (!conversation) {
@@ -29,20 +30,21 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PUT(req, { params }) {
+export async function PUT(req, context) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user?.id) {
+    const userId = await resolveSessionUserId(session);
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = await context.params;
     const body = await req.json();
     await connectDB();
 
     const conversation = await Conversation.findOne({
       _id: id,
-      userId: session.user.id,
+      userId,
     });
 
     if (!conversation) {
@@ -73,19 +75,20 @@ export async function PUT(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user?.id) {
+    const userId = await resolveSessionUserId(session);
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = await params;
+    const { id } = await context.params;
     await connectDB();
 
     const result = await Conversation.deleteOne({
       _id: id,
-      userId: session.user.id,
+      userId,
     });
 
     if (result.deletedCount === 0) {
