@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { authOptions, resolveSessionUserId } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 
 export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || !session.user?.id) {
+    const userId = await resolveSessionUserId(session);
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -17,7 +18,7 @@ export async function POST(req) {
     }
 
     await connectDB();
-    const user = await User.findById(session.user.id).select('settings');
+    const user = await User.findById(userId).select('settings');
     
     // Choose API key: custom user override takes precedence, fallback to server key
     const apiKey = user?.settings?.customApiKey || process.env.OPENROUTER_API_KEY;

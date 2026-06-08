@@ -35,7 +35,7 @@ export default function Home() {
   });
 
   // Sidebar visibility on mobile
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Ref for stream abort control
   const abortControllerRef = useRef(null);
@@ -70,6 +70,19 @@ export default function Home() {
       fetchConversations();
     }
   }, [status]);
+
+  // Default sidebar behavior by viewport width
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Load active conversation messages when activeId changes
   useEffect(() => {
@@ -149,25 +162,6 @@ export default function Home() {
       console.error('Error deleting chat:', e);
     }
   };
-
-  const quickActions = [
-    {
-      label: 'PPE Compliance',
-      prompt: 'Explain how computer vision is used to detect PPE compliance in industrial facilities.',
-    },
-    {
-      label: 'Incident Report',
-      prompt: 'Draft a professional incident report for an industrial security breach.',
-    },
-    {
-      label: 'Thermal Anomaly',
-      prompt: 'Describe how thermal imaging can detect machinery anomalies before failure.',
-    },
-    {
-      label: 'Intrusion Protocol',
-      prompt: 'Summarize the best practices for responding to an unauthorized intrusion in a secure facility.',
-    },
-  ];
 
   const handleRenameChat = async (id, newTitle) => {
     if (!newTitle.trim()) return;
@@ -477,37 +471,27 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.quickActions}>
-        <span className={styles.quickActionsLabel}>Quick actions</span>
-        <div className={styles.quickActionsList}>
-          {quickActions.map((action) => (
-            <button
-              key={action.label}
-              type="button"
-              className={styles.quickActionChip}
-              onClick={() => handleSendMessage(action.prompt)}
-              disabled={isStreaming}
-            >
-              {action.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className={styles.mainContent}>
         {/* Sidebar Toggle for Mobile */}
         <button
           className={styles.sidebarToggle}
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          aria-label="Toggle Sidebar"
+          onClick={() => setIsSidebarOpen((prev) => !prev)}
+          aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
         >
           ☰
         </button>
 
+        {/* Mobile sidebar backdrop */}
+        <div
+          className={`${styles.sidebarBackdrop} ${isSidebarOpen ? styles.backdropVisible : ''}`}
+          onClick={() => setIsSidebarOpen(false)}
+          aria-hidden="true"
+        />
+
         {/* Main Sidebar */}
         <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
           <Sidebar
-          conversations={conversations}
+            conversations={conversations}
           activeId={activeId}
           onSelectConversation={(id) => {
             setActiveId(id);
@@ -519,7 +503,12 @@ export default function Home() {
           onNewChat={handleNewChat}
           onDeleteConversation={handleDeleteChat}
           onRenameConversation={handleRenameChat}
-          onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenSettings={() => {
+            setIsSettingsOpen(true);
+            if (window.innerWidth <= 768) {
+              setIsSidebarOpen(false);
+            }
+          }}
           isLoading={isLoadingConversations}
           session={session}
         />
@@ -548,5 +537,6 @@ export default function Home() {
         />
       )}
     </div>
+  </div>
   );
 }

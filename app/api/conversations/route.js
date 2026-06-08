@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { authOptions, resolveSessionUserId } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/lib/models/Conversation';
 import User from '@/lib/models/User';
@@ -8,15 +8,16 @@ import User from '@/lib/models/User';
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    const userId = await resolveSessionUserId(session);
 
-    if (!session || !session.user?.id) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();
     
     // Fetch conversations sorted by updatedAt desc, return only key fields
-    const conversations = await Conversation.find({ userId: session.user.id })
+    const conversations = await Conversation.find({ userId })
       .select('title model updatedAt')
       .sort({ updatedAt: -1 });
 
@@ -30,8 +31,9 @@ export async function GET() {
 export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
+    const userId = await resolveSessionUserId(session);
 
-    if (!session || !session.user?.id) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -41,12 +43,12 @@ export async function POST(req) {
 
     if (!model) {
       // Fallback to user default model setting
-      const user = await User.findById(session.user.id).select('settings');
+      const user = await User.findById(userId).select('settings');
       model = user?.settings?.selectedModel || 'openrouter/free';
     }
 
     const conversation = await Conversation.create({
-      userId: session.user.id,
+      userId,
       title: 'New Chat',
       model: model,
       messages: [],

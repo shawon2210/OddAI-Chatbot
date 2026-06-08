@@ -46,7 +46,7 @@ export default function ModelSelector({ selectedModel, onModelChange, disabled =
   };
 
   return (
-    <div className={dropdownRef} ref={dropdownRef} className={styles.container}>
+    <div ref={dropdownRef} className={styles.container}>
       <button
         type="button"
         className={`${styles.trigger} ${isOpen ? styles.active : ''}`}

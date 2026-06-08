@@ -1,19 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { authOptions, resolveSessionUserId } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    const userId = await resolveSessionUserId(session);
 
-    if (!session || !session.user?.id) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();
-    const user = await User.findById(session.user.id).select('settings');
+    const user = await User.findById(userId).select('settings');
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -29,15 +30,16 @@ export async function GET() {
 export async function PUT(req) {
   try {
     const session = await getServerSession(authOptions);
+    const userId = await resolveSessionUserId(session);
 
-    if (!session || !session.user?.id) {
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { theme, selectedModel, systemPrompt, customApiKey } = await req.json();
 
     await connectDB();
-    const user = await User.findById(session.user.id);
+    const user = await User.findById(userId);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

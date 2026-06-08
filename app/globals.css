@@ -84,11 +84,18 @@
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--bg-primary);
+  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.14), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.12), transparent 20%),
+    var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.5;
   overflow-x: hidden;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: background var(--transition-normal), color var(--transition-normal);
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.25);
+  color: inherit;
 }
 
 /* Custom Scrollbar */

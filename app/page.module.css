@@ -1,10 +1,10 @@
 .appShell {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
-  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.08), transparent 25%),
+  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.08), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.06), transparent 25%),
     var(--bg-primary);
   overflow: hidden;
   position: relative;
@@ -78,59 +78,15 @@
   transform: translateY(-1px);
 }
 
-.quickActions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px 32px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(10, 10, 18, 0.92);
-}
-
-.quickActionsLabel {
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text-secondary);
-}
-
-.quickActionsList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.quickActionChip {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 10px 16px;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.quickActionChip:hover {
-  background: rgba(99, 102, 241, 0.12);
-  transform: translateY(-1px);
-}
-
-.quickActionChip:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
 .sidebarWrapper {
-  width: 300px;
-  min-width: 300px;
-  height: calc(100vh - 168px);
+  width: 280px;
+  min-width: 280px;
+  height: calc(100vh - 180px);
   flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 10, 18, 0.95);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 10, 18, 0.96);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   z-index: 10;
   transition: transform var(--transition-normal), width var(--transition-normal);
   position: relative;
@@ -139,7 +95,7 @@
 
 .chatWrapper {
   flex-grow: 1;
-  height: calc(100vh - 168px);
+  min-height: calc(100vh - 180px);
   display: flex;
   flex-direction: column;
   min-width: 0; /* Prevents flex items from expanding beyond parent */
@@ -151,6 +107,8 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  gap: 16px;
+  padding: 0 24px 24px;
 }
 
 /* Sidebar toggle menu for mobile viewports */
@@ -173,31 +131,29 @@
   backdrop-filter: blur(16px);
 }
 
-.sidebarOpen {
-  transform: translateX(0);
-}
+  .sidebarBackdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    z-index: 15;
+  }
 
-/* App-level loading states */
-.loadingContainer {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100vw;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-primary);
-  color: var(--text-secondary);
-  gap: 16px;
-}
+  .backdropVisible {
+    display: block;
+    opacity: 1;
+  }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(99, 102, 241, 0.12);
-  border-top: 3px solid var(--accent-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(99, 102, 241, 0.12);
+    border-top: 3px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -223,12 +179,9 @@
     flex-wrap: wrap;
   }
 
-  .quickActions {
-    padding: 16px 20px 0;
-  }
-
   .mainContent {
     flex-direction: column;
+    padding: 0 20px 20px;
   }
 
   .sidebarWrapper {
@@ -240,6 +193,7 @@
     height: auto;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-right: 0;
   }
 
   .chatWrapper {
@@ -262,6 +216,24 @@
     background: rgba(10, 10, 18, 0.98);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
+    z-index: 22;
+  }
+
+  .sidebarToggle {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
+    z-index: 24;
+    background: rgba(18, 18, 26, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(16px);
+  }
+
+  .sidebarBackdrop {
+    z-index: 20;
   }
 
   .sidebarOpen {
@@ -279,14 +251,5 @@
 
   .topBar {
     padding: 16px 18px;
-  }
-
-  .quickActions {
-    padding: 16px 18px 0;
-  }
-
-  .quickActionChip {
-    flex: 1 1 calc(50% - 10px);
-    min-width: 130px;
   }
 }
