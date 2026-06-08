@@ -95,6 +95,17 @@ export default function ChatArea({
         </div>
       </header>
 
+      <div className={styles.composeToolbar}>
+        <div className={styles.conversationBadge}>
+          <span>Conversation</span>
+          <strong>{activeConversation ? activeConversation.title : 'New session'}</strong>
+        </div>
+        <div className={styles.modelBadge}>
+          <span>Model</span>
+          <strong>{selectedModel}</strong>
+        </div>
+      </div>
+
       {/* Message Area */}
       <div className={styles.messageViewport}>
         {isLoadingMessages ? (
