@@ -1,47 +1,180 @@
 .appShell {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   width: 100vw;
-  background-color: var(--bg-primary);
+  background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.08), transparent 25%),
+    var(--bg-primary);
   overflow: hidden;
   position: relative;
 }
 
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 10, 18, 0.92);
+  backdrop-filter: blur(18px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brandSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brandLogo {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.brandTitle {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.brandSubtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.appBarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.appBarBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.appBarBtn:hover {
+  background: rgba(99, 102, 241, 0.14);
+  transform: translateY(-1px);
+}
+
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 32px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(10, 10, 18, 0.92);
+}
+
+.quickActionsLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+.quickActionsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.quickActionChip {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.quickActionChip:hover {
+  background: rgba(99, 102, 241, 0.12);
+  transform: translateY(-1px);
+}
+
+.quickActionChip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .sidebarWrapper {
-  width: 280px;
-  height: 100%;
+  width: 300px;
+  min-width: 300px;
+  height: calc(100vh - 168px);
   flex-shrink: 0;
-  border-right: 1px solid var(--border-color);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 10, 18, 0.95);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
   z-index: 10;
-  transition: transform var(--transition-normal);
+  transition: transform var(--transition-normal), width var(--transition-normal);
+  position: relative;
+  overflow: hidden;
 }
 
 .chatWrapper {
   flex-grow: 1;
-  height: 100%;
+  height: calc(100vh - 168px);
   display: flex;
   flex-direction: column;
   min-width: 0; /* Prevents flex items from expanding beyond parent */
+  position: relative;
+}
+
+.mainContent {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Sidebar toggle menu for mobile viewports */
 .sidebarToggle {
   display: none;
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 18px;
+  left: 18px;
   z-index: 20;
-  background: var(--bg-glass);
-  border: 1px solid var(--border-color);
+  background: rgba(18, 18, 26, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-primary);
-  border-radius: var(--radius-sm);
-  width: 38px;
-  height: 38px;
+  border-radius: var(--radius-full);
+  width: 42px;
+  height: 42px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
-  backdrop-filter: blur(10px);
+  font-size: 1.1rem;
+  backdrop-filter: blur(16px);
+}
+
+.sidebarOpen {
+  transform: translateX(0);
 }
 
 /* App-level loading states */
@@ -60,7 +193,7 @@
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(99, 102, 241, 0.1);
+  border: 3px solid rgba(99, 102, 241, 0.12);
   border-top: 3px solid var(--accent-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -72,20 +205,88 @@
 }
 
 /* Responsive styles */
-@media (max-width: 768px) {
-  .sidebarToggle {
-    display: flex;
+@media (max-width: 1024px) {
+  .appShell {
+    overflow: visible;
+  }
+
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 20px;
+  }
+
+  .appBarActions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .quickActions {
+    padding: 16px 20px 0;
+  }
+
+  .mainContent {
+    flex-direction: column;
   }
 
   .sidebarWrapper {
-    position: absolute;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    position: relative;
+    transform: translateX(0);
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .chatWrapper {
+    height: auto;
+  }
+
+  .sidebarToggle {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebarWrapper {
+    position: fixed;
     left: 0;
     top: 0;
-    transform: translateX(-100%);
-    box-shadow: var(--shadow-xl);
+    width: 280px;
+    height: 100vh;
+    transform: translateX(-110%);
+    background: rgba(10, 10, 18, 0.98);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.35);
   }
 
   .sidebarOpen {
     transform: translateX(0);
+  }
+
+  .mainContent {
+    position: relative;
+  }
+
+  .chatWrapper {
+    padding-top: 12px;
+    min-height: calc(100vh - 140px);
+  }
+
+  .topBar {
+    padding: 16px 18px;
+  }
+
+  .quickActions {
+    padding: 16px 18px 0;
+  }
+
+  .quickActionChip {
+    flex: 1 1 calc(50% - 10px);
+    min-width: 130px;
   }
 }

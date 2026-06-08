@@ -84,7 +84,7 @@ export default function Home() {
   const fetchConversations = async () => {
     try {
       setIsLoadingConversations(true);
-      const res = await fetch('/api/conversations');
+      const res = await fetch('/api/conversations', { credentials: 'same-origin' });
       if (res.ok) {
         const data = await res.json();
         setConversations(data);
@@ -99,7 +99,7 @@ export default function Home() {
   const fetchConversationDetails = async (id) => {
     try {
       setIsLoadingMessages(true);
-      const res = await fetch(`/api/conversations/${id}`);
+      const res = await fetch(`/api/conversations/${id}`, { credentials: 'same-origin' });
       if (res.ok) {
         const data = await res.json();
         setActiveConversation(data);
@@ -117,6 +117,7 @@ export default function Home() {
       const selectedModel = modelId || userSettings.selectedModel || 'openrouter/free';
       const res = await fetch('/api/conversations', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: selectedModel }),
       });
@@ -149,6 +150,25 @@ export default function Home() {
     }
   };
 
+  const quickActions = [
+    {
+      label: 'PPE Compliance',
+      prompt: 'Explain how computer vision is used to detect PPE compliance in industrial facilities.',
+    },
+    {
+      label: 'Incident Report',
+      prompt: 'Draft a professional incident report for an industrial security breach.',
+    },
+    {
+      label: 'Thermal Anomaly',
+      prompt: 'Describe how thermal imaging can detect machinery anomalies before failure.',
+    },
+    {
+      label: 'Intrusion Protocol',
+      prompt: 'Summarize the best practices for responding to an unauthorized intrusion in a secure facility.',
+    },
+  ];
+
   const handleRenameChat = async (id, newTitle) => {
     if (!newTitle.trim()) return;
     try {
@@ -174,6 +194,7 @@ export default function Home() {
     try {
       const res = await fetch('/api/settings', {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedFields),
       });
@@ -206,9 +227,12 @@ export default function Home() {
 
   const handleSendMessage = async (text) => {
     if (!text.trim()) return;
+    if (status !== 'authenticated') {
+      router.push('/login');
+      return;
+    }
 
     let currentConversationId = activeId;
-    let updatedMessages = [];
 
     // 1. Auto-create a conversation if none is active
     if (!currentConversationId) {
@@ -216,6 +240,7 @@ export default function Home() {
         const selectedModel = userSettings.selectedModel || 'openrouter/free';
         const res = await fetch('/api/conversations', {
           method: 'POST',
+          credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: selectedModel }),
         });
@@ -224,9 +249,11 @@ export default function Home() {
           const newChat = await res.json();
           currentConversationId = newChat._id;
           setActiveId(newChat._id);
+          setActiveConversation(newChat);
           setConversations((prev) => [newChat, ...prev]);
         } else {
-          console.error('Failed to auto-create conversation');
+          const errorBody = await res.json().catch(() => null);
+          console.error('Failed to auto-create conversation', res.status, errorBody);
           return;
         }
       } catch (e) {
@@ -267,6 +294,7 @@ export default function Home() {
     try {
       await fetch(`/api/conversations/${currentConversationId}`, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessagesList.map(m => ({
@@ -308,6 +336,7 @@ export default function Home() {
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: apiMessagesHistory,
@@ -373,6 +402,7 @@ export default function Home() {
 
       await fetch(`/api/conversations/${currentConversationId}`, {
         method: 'PUT',
+        credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: finalMessagesList.map(m => ({
@@ -427,18 +457,56 @@ export default function Home() {
 
   return (
     <div className={styles.appShell}>
-      {/* Sidebar Toggle for Mobile */}
-      <button 
-        className={styles.sidebarToggle}
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        aria-label="Toggle Sidebar"
-      >
-        ☰
-      </button>
+      {/* Top app bar */}
+      <div className={styles.topBar}>
+        <div className={styles.brandSection}>
+          <div className={styles.brandLogo}>OddAI</div>
+          <div>
+            <h1 className={styles.brandTitle}>OddAI Assistant</h1>
+            <p className={styles.brandSubtitle}>A modern chat experience for industrial surveillance and safety.</p>
+          </div>
+        </div>
 
-      {/* Main Sidebar */}
-      <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
-        <Sidebar
+        <div className={styles.appBarActions}>
+          <button className={styles.appBarBtn} onClick={() => handleNewChat()}>
+            New chat
+          </button>
+          <button className={styles.appBarBtn} onClick={() => setIsSettingsOpen(true)}>
+            Settings
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.quickActions}>
+        <span className={styles.quickActionsLabel}>Quick actions</span>
+        <div className={styles.quickActionsList}>
+          {quickActions.map((action) => (
+            <button
+              key={action.label}
+              type="button"
+              className={styles.quickActionChip}
+              onClick={() => handleSendMessage(action.prompt)}
+              disabled={isStreaming}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.mainContent}>
+        {/* Sidebar Toggle for Mobile */}
+        <button
+          className={styles.sidebarToggle}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label="Toggle Sidebar"
+        >
+          ☰
+        </button>
+
+        {/* Main Sidebar */}
+        <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+          <Sidebar
           conversations={conversations}
           activeId={activeId}
           onSelectConversation={(id) => {

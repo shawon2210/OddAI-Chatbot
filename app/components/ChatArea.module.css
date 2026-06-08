@@ -10,7 +10,6 @@
 
 /* Header styling */
 .header {
-  height: 72px;
   min-height: 72px;
   padding: 0 28px;
   display: flex;
@@ -25,7 +24,17 @@
 /* Adjust padding for mobile sidebar toggle button */
 @media (max-width: 768px) {
   .header {
-    padding-left: 68px; /* Leave space for the floating hamburger button */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
   }
 }
 
@@ -95,6 +104,20 @@
   background: rgba(15, 15, 25, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(22px);
+}
+
+@media (max-width: 768px) {
+  .composeToolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px 18px;
+  }
+
+  .conversationBadge,
+  .modelBadge {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .conversationBadge,
@@ -282,6 +305,7 @@
   }
   .actionButton {
     padding: 0 12px;
+    min-width: 44px;
   }
   .btnLabel {
     display: none; /* Hide text label on mobile, just show icons */
