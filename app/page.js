@@ -464,7 +464,7 @@ export default function Home() {
       />
 
       {/* Main Sidebar */}
-      <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
+      <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : styles.sidebarHidden}`}>
         <button
           className={styles.sidebarCloseButton}
           onClick={() => setIsSidebarOpen(false)}
