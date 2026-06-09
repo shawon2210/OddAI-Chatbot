@@ -1,13 +1,15 @@
+/* ─── LOGIN PAGE ─── */
+
 .container {
   display: flex;
   min-height: 100vh;
   width: 100%;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%);
+  background-color: var(--bg-page);
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(127, 119, 221, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(83, 74, 183, 0.05) 0%, transparent 40%);
   padding: 24px;
 }
 
@@ -17,7 +19,7 @@
   background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 40px;
   box-shadow: var(--shadow-xl);
@@ -98,7 +100,7 @@
 .inputIcon {
   position: absolute;
   left: 14px;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   pointer-events: none;
 }
 
@@ -106,7 +108,7 @@
   width: 100%;
   padding: 12px 16px 12px 42px;
   background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: inherit;
@@ -116,8 +118,8 @@
 
 .input:focus {
   outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.15);
 }
 
 .submitBtn {
@@ -157,15 +159,16 @@
   align-items: center;
   width: 100%;
   margin: 24px 0;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   font-size: 0.8rem;
 }
 
-.divider::before, .divider::after {
+.divider::before,
+.divider::after {
   content: "";
   flex: 1;
   height: 1px;
-  background-color: var(--border-color);
+  background-color: var(--border);
 }
 
 .divider span {
@@ -186,7 +189,7 @@
   gap: 8px;
   padding: 10px;
   background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-size: 0.85rem;
@@ -196,7 +199,7 @@
 }
 
 .oauthBtn:hover {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-hover);
   border-color: var(--border-hover);
 }
 
@@ -207,7 +210,7 @@
 }
 
 .link {
-  color: var(--accent-primary);
+  color: var(--accent);
   text-decoration: none;
   font-weight: 500;
 }
@@ -217,12 +220,12 @@
 }
 
 @keyframes logoPulse {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(99, 102, 241, 0.2)); }
-  50% { transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5)); }
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(127, 119, 221, 0.2)); }
+  50%      { transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(127, 119, 221, 0.5)); }
 }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
+  25%      { transform: translateX(-4px); }
+  75%      { transform: translateX(4px); }
 }

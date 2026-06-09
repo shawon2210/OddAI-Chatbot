@@ -1,9 +1,11 @@
+/* ─── THEME TOGGLE ─── */
+
 .toggleBtn {
   background: var(--bg-input);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   color: var(--text-primary);
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
@@ -16,13 +18,11 @@
 
 .toggleBtn:hover {
   border-color: var(--border-hover);
-  background: var(--bg-tertiary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  background: var(--bg-hover);
 }
 
 .toggleBtn:active {
-  transform: translateY(0) scale(0.95);
+  transform: scale(0.95);
 }
 
 .iconWrapper {
@@ -41,13 +41,13 @@
 }
 
 .sun {
-  color: #f59e0b; /* Warm amber for light mode */
+  color: #f59e0b;
   opacity: 0;
   transform: rotate(-90deg) scale(0.5);
 }
 
 .moon {
-  color: #8b5cf6; /* Violet-indigo shade for dark mode */
+  color: #8b5cf6;
   opacity: 0;
   transform: rotate(90deg) scale(0.5);
 }

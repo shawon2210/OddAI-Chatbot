@@ -1,23 +1,18 @@
+/* ─── WELCOME / EMPTY STATE ─── */
+
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 860px;
-  width: 100%;
-  margin: auto;
-  padding: 40px 20px;
-  text-align: center;
-  gap: 40px;
-  min-height: 100%;
-  overflow-y: auto;
+  max-width: var(--msg-max-w);
+  margin: 0 auto;
+  padding: 60px 24px 24px;
 }
 
 .heroSection {
+  text-align: center;
+  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
 }
 
 .logoContainer {
@@ -25,156 +20,93 @@
 }
 
 .logoSvg {
-  filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.25));
-}
-
-.outerRing {
-  transform-origin: 50px 50px;
-  animation: rotateClockwise 20s linear infinite;
-}
-
-.innerShield {
-  transform-origin: 50px 50px;
-  animation: pulseShield 4s ease-in-out infinite;
-}
-
-.innerCore {
-  transform-origin: 50px 50px;
-  animation: pulseCore 2s ease-in-out infinite;
-}
-
-@keyframes rotateClockwise {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes pulseShield {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.95;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.75;
-  }
-}
-
-@keyframes pulseCore {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.25);
-    opacity: 1;
-    filter: drop-shadow(0 0 4px var(--accent-primary));
-  }
+  width: 56px;
+  height: 56px;
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-size: 28px;
+  font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
 }
 
 .gradientText {
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* Uses the accent color directly */
 }
 
 .subtitle {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-  max-width: 540px;
-  line-height: 1.5;
+  font-size: 15px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+  max-width: 480px;
 }
 
-/* Prompts Grid */
+/* Suggestion grid */
 .promptsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px;
 }
 
 .promptCard {
-  background: rgba(17, 17, 28, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-xl);
-  padding: 22px 20px;
-  text-align: left;
+  padding: 14px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(18px);
+  text-align: left;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  font-family: var(--font-sans);
-  color: var(--text-primary);
-  outline: none;
+  min-height: 110px;
 }
 
 .promptCard:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  background: rgba(99, 102, 241, 0.06);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg), 0 0 30px rgba(99, 102, 241, 0.08);
-}
-
-.promptCard:active {
-  transform: translateY(-1px);
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  border-color: var(--accent);
+  background: var(--accent-light);
 }
 
 .iconBox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--accent-primary);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  font-size: 20px;
+  margin-bottom: 8px;
 }
 
-.promptCard:hover .iconBox {
-  background: var(--accent-gradient);
-  color: #ffffff;
+.cardIcon {
+  color: var(--text-secondary);
 }
 
 .cardTitle {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
 }
 
 .cardDesc {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 12px;
+  color: var(--text-tertiary);
   line-height: 1.4;
 }
 
-/* Responsive styles */
-@media (max-width: 640px) {
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .container {
+    padding: 36px 16px 16px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .promptsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
   .promptsGrid {
     grid-template-columns: 1fr;
-  }
-  .title {
-    font-size: 1.75rem;
-  }
-  .subtitle {
-    font-size: 0.9rem;
   }
 }

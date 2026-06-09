@@ -35,48 +35,21 @@ export default function WelcomeScreen({ onSelectPrompt }) {
   return (
     <div className={`${styles.container} slide-up`}>
       <div className={styles.heroSection}>
-        {/* Animated Brand Logo */}
         <div className={styles.logoContainer}>
           <svg
             className={styles.logoSvg}
-            width="80"
-            height="80"
+            width="56"
+            height="56"
             viewBox="0 0 100 100"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle
-              cx="50"
-              cy="50"
-              r="40"
-              stroke="url(#accentGradient)"
-              strokeWidth="4"
-              strokeDasharray="10 5"
-              className={styles.outerRing}
-            />
-            <circle
-              cx="50"
-              cy="50"
-              r="28"
-              stroke="var(--text-secondary)"
-              strokeWidth="1.5"
-              strokeOpacity="0.3"
-            />
-            <path
-              d="M50 35 L62 48 L58 65 L42 65 L38 48 Z"
-              fill="url(#accentGradient)"
-              className={styles.innerShield}
-            />
-            <circle cx="50" cy="50" r="6" fill="var(--bg-primary)" className={styles.innerCore} />
-            <defs>
-              <linearGradient id="accentGradient" x1="0" y1="0" x2="100" y2="100">
-                <stop offset="0%" stopColor="var(--accent-primary)" />
-                <stop offset="100%" stopColor="var(--accent-secondary)" />
-              </linearGradient>
-            </defs>
+            <circle cx="50" cy="50" r="40" stroke="var(--accent)" strokeWidth="4" strokeDasharray="10 5" />
+            <circle cx="50" cy="50" r="28" stroke="var(--text-tertiary)" strokeWidth="1.5" opacity="0.3" />
+            <path d="M50 35 L62 48 L58 65 L42 65 L38 48 Z" fill="var(--accent)" />
+            <circle cx="50" cy="50" r="6" fill="var(--bg-page)" />
           </svg>
         </div>
-
         <h1 className={styles.title}>
           OddAI <span className={styles.gradientText}>Assistant</span>
         </h1>
@@ -93,10 +66,8 @@ export default function WelcomeScreen({ onSelectPrompt }) {
             className={styles.promptCard}
             onClick={() => onSelectPrompt(item.prompt)}
           >
-            <div className={styles.cardHeader}>
-              <div className={styles.iconBox}>{item.icon}</div>
-              <h3 className={styles.cardTitle}>{item.title}</h3>
-            </div>
+            <div className={styles.iconBox}>{item.icon}</div>
+            <h3 className={styles.cardTitle}>{item.title}</h3>
             <p className={styles.cardDesc}>{item.description}</p>
           </button>
         ))}

@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Search, Share2, Settings, Menu, X } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
+import ModelSelector from './components/ModelSelector';
 import SettingsModal from './components/SettingsModal';
 import { useTheme } from './components/ClientProviders';
-import styles from './page.module.css'; // Let's create a minimal orchestrator layout stylesheet too
+import styles from './page.module.css';
 
 export default function Home() {
   const { data: session, status, update: updateSession } = useSession();
@@ -74,9 +76,7 @@ export default function Home() {
   // Default sidebar behavior by viewport width
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsSidebarOpen(true);
-      }
+      setIsSidebarOpen(window.innerWidth > 768);
     };
 
     handleResize();
@@ -446,52 +446,35 @@ export default function Home() {
   }
 
   if (status === 'unauthenticated') {
-    return null; // Will redirect via useEffect
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Redirecting to login…</p>
+      </div>
+    );
   }
 
   return (
     <div className={styles.appShell}>
-      {/* Top app bar */}
-      <div className={styles.topBar}>
-        <div className={styles.brandSection}>
-          <div className={styles.brandLogo}>OddAI</div>
-          <div>
-            <h1 className={styles.brandTitle}>OddAI Assistant</h1>
-            <p className={styles.brandSubtitle}>A modern chat experience for industrial surveillance and safety.</p>
-          </div>
-        </div>
+      {/* Mobile sidebar backdrop */}
+      <div
+        className={`${styles.sidebarBackdrop} ${isSidebarOpen ? styles.backdropVisible : ''}`}
+        onClick={() => setIsSidebarOpen(false)}
+        aria-hidden="true"
+      />
 
-        <div className={styles.appBarActions}>
-          <button className={styles.appBarBtn} onClick={() => handleNewChat()}>
-            New chat
-          </button>
-          <button className={styles.appBarBtn} onClick={() => setIsSettingsOpen(true)}>
-            Settings
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.mainContent}>
-        {/* Sidebar Toggle for Mobile */}
+      {/* Main Sidebar */}
+      <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
         <button
-          className={styles.sidebarToggle}
-          onClick={() => setIsSidebarOpen((prev) => !prev)}
-          aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
-        >
-          ☰
-        </button>
-
-        {/* Mobile sidebar backdrop */}
-        <div
-          className={`${styles.sidebarBackdrop} ${isSidebarOpen ? styles.backdropVisible : ''}`}
+          className={styles.sidebarCloseButton}
           onClick={() => setIsSidebarOpen(false)}
-          aria-hidden="true"
-        />
-
-        {/* Main Sidebar */}
-        <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : ''}`}>
-          <Sidebar
-            conversations={conversations}
+          aria-label="Close sidebar"
+          type="button"
+        >
+          <X size={18} />
+        </button>
+        <Sidebar
+          conversations={conversations}
           activeId={activeId}
           onSelectConversation={(id) => {
             setActiveId(id);
@@ -515,7 +498,43 @@ export default function Home() {
       </div>
 
       {/* Main Chat Pane */}
-      <div className={styles.chatWrapper}>
+      <div className={styles.chatPane}>
+        {/* Top app bar */}
+        <div className={styles.topBar}>
+          <div className={styles.topBarLeft}>
+            <button
+              className={styles.sidebarToggle}
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
+              aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+              type="button"
+            >
+              {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+            <ModelSelector
+              selectedModel={userSettings.selectedModel}
+              onModelChange={(modelId) => handleUpdateSettings({ selectedModel: modelId })}
+              disabled={isStreaming}
+            />
+          </div>
+
+          <div className={styles.topBarRight}>
+            <button className={styles.iconBtn} title="Search" type="button">
+              <Search size={16} />
+            </button>
+            <button className={styles.iconBtn} title="Share" type="button">
+              <Share2 size={16} />
+            </button>
+            <button
+              className={styles.iconBtn}
+              title="Open settings"
+              type="button"
+              onClick={() => setIsSettingsOpen(true)}
+            >
+              <Settings size={16} />
+            </button>
+          </div>
+        </div>
+
         <ChatArea
           messages={messages}
           activeConversation={activeConversation}
@@ -531,12 +550,12 @@ export default function Home() {
       {/* Settings Dialog Overlay */}
       {isSettingsOpen && (
         <SettingsModal
+          key={`${userSettings.selectedModel}-${userSettings.theme}-${userSettings.systemPrompt}-${userSettings.customApiKey}`}
           settings={userSettings}
           onSave={handleUpdateSettings}
           onClose={() => setIsSettingsOpen(false)}
         />
       )}
     </div>
-  </div>
   );
 }

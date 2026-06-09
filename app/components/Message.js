@@ -5,10 +5,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, Check, User, Bot, AlertTriangle } from 'lucide-react';
+import { Copy, Check, User, Bot, AlertTriangle, RefreshCcw, ThumbsUp, ThumbsDown } from 'lucide-react';
 import styles from './Message.module.css';
 
-// Custom CodeBlock Component for Markdown rendering
 function CodeBlock({ language, value }) {
   const [copied, setCopied] = useState(false);
 
@@ -21,17 +20,17 @@ function CodeBlock({ language, value }) {
   return (
     <div className={styles.codeBlockContainer}>
       <div className={styles.codeBlockHeader}>
-        <span className={styles.codeLanguage}>{language || 'code'}</span>
-        <button onClick={handleCopy} className={styles.copyBtn} title="Copy code">
+        <span className={styles.codeLang}>{language || 'code'}</span>
+        <button onClick={handleCopy} className={styles.copyCodeBtn} type="button">
           {copied ? (
             <>
-              <Check size={13} className={styles.copiedIcon} />
+              <Check size={12} className={styles.copiedIcon} />
               <span>Copied!</span>
             </>
           ) : (
             <>
-              <Copy size={13} />
-              <span>Copy</span>
+              <Copy size={12} />
+              <span>Copy code</span>
             </>
           )}
         </button>
@@ -43,10 +42,10 @@ function CodeBlock({ language, value }) {
           customStyle={{
             margin: 0,
             background: 'transparent',
-            padding: '14px',
-            fontSize: '0.85rem',
-            lineHeight: '1.45',
-            fontFamily: 'var(--font-code)',
+            padding: '14px 16px',
+            fontSize: '13px',
+            lineHeight: '1.6',
+            fontFamily: 'var(--font-mono)',
           }}
         >
           {value}
@@ -59,6 +58,7 @@ function CodeBlock({ language, value }) {
 export default function Message({ message }) {
   const { role, content, timestamp, isStreaming, isError } = message;
   const isUser = role === 'user';
+  const [copiedMessage, setCopiedMessage] = useState(false);
 
   const formatTime = (isoString) => {
     if (!isoString) return '';
@@ -70,28 +70,42 @@ export default function Message({ message }) {
     }
   };
 
-  return (
-    <div className={`${styles.messageWrapper} ${isUser ? styles.userWrapper : styles.aiWrapper}`}>
-      {/* Avatar Icon */}
-      <div className={`${styles.avatar} ${isUser ? styles.userAvatar : styles.aiAvatar}`}>
-        {isUser ? <User size={16} /> : <Bot size={16} />}
-      </div>
+  const handleCopyMessage = () => {
+    if (!content) return;
+    navigator.clipboard.writeText(content);
+    setCopiedMessage(true);
+    setTimeout(() => setCopiedMessage(false), 1600);
+  };
 
-      <div className={styles.messageContentArea}>
-        {/* Message bubble itself */}
+  const isTyping = !isUser && isStreaming;
+
+  return (
+    <div className={`${styles.messageRow} ${isUser ? styles.userRow : styles.aiRow}`}>
+      {/* Avatar for AI */}
+      {!isUser && (
+        <div className={styles.aiAvatar}>✦</div>
+      )}
+
+      <div className={styles.aiContent}>
+        {/* AI name label */}
+        {!isUser && (
+          <div className={styles.aiName}>OddAI</div>
+        )}
+
+        {/* Bubble */}
         <div
-          className={`${styles.bubble} ${
-            isUser ? styles.userBubble : styles.aiBubble
-          } ${isError ? styles.errorBubble : ''}`}
+          className={`${styles.bubble} ${isError ? styles.errorBubble : ''}`}
         >
           {isError && <AlertTriangle size={16} className={styles.errorIcon} />}
 
-          {/* If the message is assistant and completely empty, display typing indicator */}
-          {!isUser && isStreaming && !content ? (
-            <div className={styles.typingIndicator}>
-              <span className={styles.dot}></span>
-              <span className={styles.dot}></span>
-              <span className={styles.dot}></span>
+          {isTyping && !content ? (
+            <div className={styles.typingGroup}>
+              <div className={styles.typingIndicator}>
+                <span className={styles.dot} />
+                <span className={styles.dot} />
+                <span className={styles.dot} />
+              </div>
+              <span className={styles.typingLabel}>Thinking…</span>
             </div>
           ) : (
             <div className={styles.markdownContent}>
@@ -101,8 +115,6 @@ export default function Message({ message }) {
                   code({ node, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
                     const codeVal = String(children).replace(/\n$/, '');
-                    
-                    // Render code block if class name starts with language-
                     return match ? (
                       <CodeBlock language={match[1]} value={codeVal} />
                     ) : (
@@ -130,7 +142,6 @@ export default function Message({ message }) {
                 {content}
               </ReactMarkdown>
 
-              {/* Blinking cursor at the end of streaming text */}
               {!isUser && isStreaming && content && (
                 <span className={styles.cursor} />
               )}
@@ -138,11 +149,34 @@ export default function Message({ message }) {
           )}
         </div>
 
-        {/* Timestamp */}
+        {/* Action bar */}
+        <div className={styles.actionBar}>
+          <button type="button" className={styles.actionBtn} onClick={handleCopyMessage} title="Copy">
+            <Copy size={13} />
+            <span>{copiedMessage ? 'Copied' : 'Copy'}</span>
+          </button>
+          <button type="button" className={styles.actionBtn} title="Regenerate">
+            <RefreshCcw size={13} />
+          </button>
+          <button type="button" className={styles.actionBtn} title="Good response">
+            <ThumbsUp size={13} />
+          </button>
+          <button type="button" className={styles.actionBtn} title="Poor response">
+            <ThumbsDown size={13} />
+          </button>
+        </div>
+
         {timestamp && (
           <span className={styles.timestamp}>{formatTime(timestamp)}</span>
         )}
       </div>
+
+      {/* User avatar */}
+      {isUser && (
+        <div className={styles.userAvatar}>
+          <User size={16} />
+        </div>
+      )}
     </div>
   );
 }

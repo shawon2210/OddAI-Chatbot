@@ -5,19 +5,10 @@ import { X, Eye, EyeOff, Save, Settings, ShieldAlert, Sparkles } from 'lucide-re
 import styles from './SettingsModal.module.css';
 
 export default function SettingsModal({ settings, onSave, onClose }) {
-  const [theme, setTheme] = useState(settings.theme || 'dark');
-  const [systemPrompt, setSystemPrompt] = useState(settings.systemPrompt || '');
-  const [customApiKey, setCustomApiKey] = useState(settings.customApiKey || '');
+  const [theme, setTheme] = useState(() => settings.theme || 'dark');
+  const [systemPrompt, setSystemPrompt] = useState(() => settings.systemPrompt || '');
+  const [customApiKey, setCustomApiKey] = useState(() => settings.customApiKey || '');
   const [showApiKey, setShowApiKey] = useState(false);
-
-  // Sync state if settings prop updates
-  useEffect(() => {
-    if (settings) {
-      setTheme(settings.theme || 'dark');
-      setSystemPrompt(settings.systemPrompt || '');
-      setCustomApiKey(settings.customApiKey || '');
-    }
-  }, [settings]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -70,7 +61,7 @@ export default function SettingsModal({ settings, onSave, onClose }) {
               System Instruction Prompt
             </label>
             <p className={styles.sectionDesc}>
-              Guides the assistant's behavior, tone, and system instructions for all new conversations.
+              Guides the assistant&apos;s behavior, tone, and system instructions for all new conversations.
             </p>
             <textarea
               id="systemPrompt"

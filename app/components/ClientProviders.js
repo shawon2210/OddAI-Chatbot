@@ -11,14 +11,17 @@ const ThemeContext = createContext({
 export const useTheme = () => useContext(ThemeContext);
 
 export default function ClientProviders({ children }) {
-  const [theme, setThemeState] = useState('dark');
+  const [theme, setThemeState] = useState(() => {
+    if (typeof window === 'undefined') {
+      return 'dark';
+    }
+    return localStorage.getItem('theme') || 'dark';
+  });
 
-  // Handle client-side theme synchronization
+  // Keep DOM theme attribute in sync with React state
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setThemeState(savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  }, []);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   const setTheme = (newTheme) => {
     setThemeState(newTheme);

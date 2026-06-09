@@ -14,7 +14,22 @@ function LoginContent() {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => {
+    const errorParam = searchParams.get('error');
+    if (!errorParam) {
+      return '';
+    }
+    if (errorParam === 'OAuthSignin' || errorParam === 'OAuthCallback') {
+      return 'Error connecting with the auth provider.';
+    }
+    if (errorParam === 'OAuthCreateAccount') {
+      return 'Failed to create account from auth provider.';
+    }
+    if (errorParam === 'Callback') {
+      return 'Authorization callback failed.';
+    }
+    return 'An authentication error occurred.';
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already authenticated
@@ -23,22 +38,6 @@ function LoginContent() {
       router.push('/');
     }
   }, [status, router]);
-
-  // Handle URL errors (e.g., NextAuth OAuth errors)
-  useEffect(() => {
-    const errorParam = searchParams.get('error');
-    if (errorParam) {
-      if (errorParam === 'OAuthSignin' || errorParam === 'OAuthCallback') {
-        setError('Error connecting with the auth provider.');
-      } else if (errorParam === 'OAuthCreateAccount') {
-        setError('Failed to create account from auth provider.');
-      } else if (errorParam === 'Callback') {
-        setError('Authorization callback failed.');
-      } else {
-        setError('An authentication error occurred.');
-      }
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,7 +159,7 @@ function LoginContent() {
       </div>
 
       <div className={styles.footer}>
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <Link href="/register" className={styles.link}>
           Sign up
         </Link>
