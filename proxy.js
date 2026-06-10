@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 const publicPaths = ['/login', '/register', '/landing', '/favicon.ico'];
 
-export async function middleware(request) {
+export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   if (

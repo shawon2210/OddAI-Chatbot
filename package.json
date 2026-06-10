@@ -2,6 +2,7 @@
   "name": "oddai-chatbot",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "author": {
     "name": "Shawon",
     "email": "shawonshanto104141@gmail.com",
