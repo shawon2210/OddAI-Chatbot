@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import {
   Plus, Trash2, Edit2, LogOut, Settings,
@@ -205,7 +206,7 @@ export default function Sidebar({
 
         <div className={styles.profileRow} onClick={() => setProfileOpen((p) => !p)}>
           <div className={styles.avatar}>
-            {userAvatar ? <img src={userAvatar} alt={userName} /> : userInitial}
+            {userAvatar ? <Image src={userAvatar} alt={userName} width={32} height={32} /> : userInitial}
           </div>
           <span className={styles.userName}>{userName}</span>
           <MoreHorizontal size={16} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />

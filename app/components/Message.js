@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, Check, AlertTriangle, RefreshCcw, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Copy, Check, AlertTriangle, RefreshCcw, ThumbsUp, ThumbsDown, Paperclip } from 'lucide-react';
 import styles from './Message.module.css';
 
 function CodeBlock({ language, value }) {
@@ -47,25 +47,43 @@ function CodeBlock({ language, value }) {
 }
 
 export default function Message({ message }) {
-  const { role, content, timestamp, isStreaming, isError } = message;
+  const { role, content, timestamp, isStreaming, isError, attachments } = message;
   const isUser = role === 'user';
   const [copied, setCopied] = useState(false);
 
+  // Support both plain string and multimodal content array
+  const displayContent =
+    typeof content === 'string'
+      ? content
+      : Array.isArray(content)
+        ? content.find((c) => c.type === 'text')?.text || ''
+        : '';
+
   const handleCopy = () => {
-    if (!content) return;
-    navigator.clipboard.writeText(content);
+    if (!displayContent) return;
+    navigator.clipboard.writeText(displayContent);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
 
-  const isTyping = !isUser && isStreaming && !content;
+  const isTyping = !isUser && isStreaming && !displayContent;
 
   return (
     <div className={`${styles.row} ${isUser ? styles.userRow : styles.aiRow}`}>
       {isUser ? (
         /* ── User bubble ── */
         <div className={styles.userBubble}>
-          {content}
+          {attachments?.length > 0 && (
+            <div className={styles.attachmentBadges}>
+              {attachments.map((f, i) => (
+                <span key={i} className={styles.attachmentBadge}>
+                  <Paperclip size={11} />
+                  {f.name}
+                </span>
+              ))}
+            </div>
+          )}
+          {displayContent}
         </div>
       ) : (
         /* ── AI response ── */
@@ -81,13 +99,18 @@ export default function Message({ message }) {
             {isError ? (
               <div className={styles.errorBox}>
                 <AlertTriangle size={15} />
-                <span>{content}</span>
+                <span>{displayContent}</span>
               </div>
             ) : isTyping ? (
               <div className={styles.typingDots}>
                 <span className={styles.dot} />
                 <span className={styles.dot} />
                 <span className={styles.dot} />
+              </div>
+            ) : isStreaming ? (
+              <div className={styles.prose}>
+                <span style={{ whiteSpace: 'pre-wrap' }}>{displayContent}</span>
+                <span className={styles.cursor} />
               </div>
             ) : (
               <div className={styles.prose}>
@@ -96,7 +119,7 @@ export default function Message({ message }) {
                   components={{
                     code({ className, children }) {
                       const match = /language-(\w+)/.exec(className || '');
-                      const val   = String(children).replace(/\n$/, '');
+                      const val = String(children).replace(/\n$/, '');
                       return match
                         ? <CodeBlock language={match[1]} value={val} />
                         : <code className={styles.inlineCode}>{children}</code>;
@@ -113,14 +136,13 @@ export default function Message({ message }) {
                     },
                   }}
                 >
-                  {content}
+                  {displayContent}
                 </ReactMarkdown>
-                {isStreaming && <span className={styles.cursor} />}
               </div>
             )}
 
             {/* Action bar */}
-            {!isStreaming && !isTyping && content && (
+            {!isStreaming && !isTyping && displayContent && (
               <div className={styles.actions}>
                 <button type="button" className={styles.actionBtn} onClick={handleCopy} title="Copy">
                   {copied ? <Check size={15} /> : <Copy size={15} />}

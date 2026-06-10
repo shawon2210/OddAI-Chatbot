@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextResponse } from 'next/server';
 
-const publicPaths = ['/login', '/register', '/favicon.ico'];
+const publicPaths = ['/login', '/register', '/landing', '/favicon.ico'];
 
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
@@ -20,7 +20,10 @@ export async function proxy(request) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (!token && pathname !== '/') {
+  if (!token) {
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL('/landing', request.url));
+    }
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);

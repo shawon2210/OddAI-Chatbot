@@ -16,6 +16,7 @@ export default function WelcomeScreen({ onSelectPrompt }) {
   return (
     <div className={styles.container}>
       <div className={styles.inner}>
+        <div className={styles.logoMark}>O</div>
         <h1 className={styles.heading}>What can I help with?</h1>
 
         <div className={styles.suggestions}>

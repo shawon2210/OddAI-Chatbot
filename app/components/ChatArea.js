@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Square, Sparkles, Loader, Paperclip, Globe, Zap } from 'lucide-react';
+import { ArrowUp, Square, Loader, Paperclip, Globe, Zap, X } from 'lucide-react';
 import WelcomeScreen from './WelcomeScreen';
 import Message from './Message';
 import styles from './ChatArea.module.css';
@@ -13,10 +13,14 @@ export default function ChatArea({
   onStopGeneration,
   isLoadingMessages,
 }) {
-  const [inputText, setInputText]   = useState('');
-  const textareaRef                 = useRef(null);
-  const messagesEndRef              = useRef(null);
-  const viewportRef                 = useRef(null);
+  const [inputText, setInputText]     = useState('');
+  const [webSearch, setWebSearch]     = useState(false);
+  const [reasoning, setReasoning]     = useState(false);
+  const [attachments, setAttachments] = useState([]);
+  const textareaRef                   = useRef(null);
+  const messagesEndRef                = useRef(null);
+  const viewportRef                   = useRef(null);
+  const fileInputRef                  = useRef(null);
 
   const autoResize = () => {
     const el = textareaRef.current;
@@ -40,10 +44,31 @@ export default function ChatArea({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isStreaming]);
 
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    const readers = files.map(
+      (file) =>
+        new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () =>
+            resolve({ name: file.name, type: file.type, size: file.size, dataUrl: reader.result });
+          reader.readAsDataURL(file);
+        })
+    );
+    Promise.all(readers).then((results) =>
+      setAttachments((prev) => [...prev, ...results])
+    );
+    e.target.value = '';
+  };
+
+  const removeAttachment = (index) =>
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
+
   const handleSubmit = () => {
-    if (!inputText.trim() || isStreaming) return;
-    onSendMessage(inputText.trim());
+    if ((!inputText.trim() && attachments.length === 0) || isStreaming) return;
+    onSendMessage(inputText.trim(), { webSearch, reasoning, attachments });
     setInputText('');
+    setAttachments([]);
   };
 
   const handleKeyDown = (e) => {
@@ -53,7 +78,7 @@ export default function ChatArea({
     }
   };
 
-  const hasText = inputText.trim().length > 0;
+  const hasContent = inputText.trim().length > 0 || attachments.length > 0;
 
   return (
     <div className={styles.container}>
@@ -65,7 +90,7 @@ export default function ChatArea({
             <span>Loading messages…</span>
           </div>
         ) : messages.length === 0 ? (
-          <WelcomeScreen onSelectPrompt={(p) => onSendMessage(p)} />
+          <WelcomeScreen onSelectPrompt={(p) => onSendMessage(p, { webSearch, reasoning, attachments: [] })} />
         ) : (
           <div className={styles.messagesInner}>
             {messages.map((msg) => (
@@ -79,6 +104,27 @@ export default function ChatArea({
       {/* Input area */}
       <div className={styles.inputArea}>
         <div className={styles.inputWrap}>
+
+          {/* Attachment previews */}
+          {attachments.length > 0 && (
+            <div className={styles.attachmentList}>
+              {attachments.map((f, i) => (
+                <div key={i} className={styles.attachmentChip}>
+                  <Paperclip size={12} />
+                  <span className={styles.attachmentName}>{f.name}</span>
+                  <button
+                    type="button"
+                    className={styles.attachmentRemove}
+                    onClick={() => removeAttachment(i)}
+                    title="Remove"
+                  >
+                    <X size={11} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Main input box */}
           <div className={styles.inputBox}>
             <textarea
@@ -105,9 +151,9 @@ export default function ChatArea({
             ) : (
               <button
                 type="button"
-                className={`${styles.sendBtn} ${hasText ? styles.sendReady : ''}`}
+                className={`${styles.sendBtn} ${hasContent ? styles.sendReady : ''}`}
                 onClick={handleSubmit}
-                disabled={!hasText || isLoadingMessages}
+                disabled={!hasContent || isLoadingMessages}
                 title="Send message"
               >
                 <ArrowUp size={16} />
@@ -118,14 +164,40 @@ export default function ChatArea({
           {/* Bottom toolbar row */}
           <div className={styles.toolbar}>
             <div className={styles.toolbarLeft}>
-              <button type="button" className={styles.toolBtn} title="Attach file">
-                <Paperclip size={16} />
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept=".txt,.md,.pdf,.csv,.json,.js,.ts,.py,.html,.css,.xml,.yaml,.yml,image/*"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
+              <button
+                type="button"
+                className={styles.toolBtn}
+                title="Attach file"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip size={15} />
+                <span>Attach</span>
               </button>
-              <button type="button" className={styles.toolBtn} title="Search web">
-                <Globe size={16} />
+              <button
+                type="button"
+                className={`${styles.toolBtn} ${webSearch ? styles.toolBtnActive : ''}`}
+                title="Search the web for up-to-date info"
+                onClick={() => setWebSearch((v) => !v)}
+              >
+                <Globe size={15} />
+                <span>Search</span>
               </button>
-              <button type="button" className={styles.toolBtn} title="Reason">
-                <Zap size={16} />
+              <button
+                type="button"
+                className={`${styles.toolBtn} ${reasoning ? styles.toolBtnActive : ''}`}
+                title="Enable extended reasoning"
+                onClick={() => setReasoning((v) => !v)}
+              >
+                <Zap size={15} />
+                <span>Reason</span>
               </button>
             </div>
           </div>

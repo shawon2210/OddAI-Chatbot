@@ -1,0 +1,21 @@
+
+> oddai-chatbot@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.7 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.31.39:3000
+- Environments: .env.local
+✓ Ready in 396ms
+⚠ Invalid next.config.mjs options detected: 
+⚠     Unrecognized key(s) in object: 'turbo' at "experimental"
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3000
+- PID:          2365
+- Dir:          d:\all files\Project\OddAI Chatbot
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 2365 /F to stop it.
+[?25h

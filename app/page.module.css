@@ -4,53 +4,83 @@
   display: flex;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
-  background: var(--bg-page);
-  color: var(--text-primary);
+  /* NO overflow:hidden here — it would clip position:fixed children */
+  background: hsl(260 87% 3%);
+  color: hsl(40 6% 95%);
+}
+
+/* ── Fixed full-viewport video — completely independent of layout ── */
+.videoBg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* Semi-transparent dark tint over video — lets video show subtly */
+.videoBlur {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: hsl(260 87% 3%);
+  opacity: 0.78;
+  z-index: 1;
+  pointer-events: none;
 }
 
 /* ─── Sidebar wrapper ─── */
 .sidebarWrapper {
+  position: relative;
+  z-index: 10;
   width: var(--sidebar-w);
   min-width: var(--sidebar-w);
+  max-width: var(--sidebar-w);
   height: 100vh;
   flex-shrink: 0;
-  background: var(--bg-sidebar);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  transition: width 0.25s var(--ease), min-width 0.25s var(--ease);
-  z-index: 100;
-  position: relative;
+  transition: width 0.25s var(--ease), min-width 0.25s var(--ease), max-width 0.25s var(--ease);
 }
 
 .sidebarHidden {
-  width: 0;
-  min-width: 0;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
 }
 
 /* ─── Chat pane ─── */
 .chatPane {
+  position: relative;
+  z-index: 2;
   flex: 1;
+  min-width: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--bg-page);
-  min-width: 0;
-  position: relative;
 }
 
-/* ─── Top bar ─── */
+/* ─── Top bar — frosted glass ─── */
 .topBar {
+  position: relative;
+  z-index: 10;
   height: 56px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   padding: 0 16px;
   gap: 8px;
-  flex-shrink: 0;
-  background: var(--bg-page);
-  position: relative;
-  z-index: 10;
+  background: rgba(4, 1, 12, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
 .topBarLeft {
@@ -58,63 +88,51 @@
   align-items: center;
   gap: 6px;
   flex: 1;
+  min-width: 0;
 }
 
 .topBarRight {
   display: flex;
   align-items: center;
   gap: 4px;
-}
-
-/* Hamburger / toggle */
-.sidebarToggle {
-  display: flex;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
   flex-shrink: 0;
 }
 
-.sidebarToggle:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* Close button inside sidebar on mobile */
-.sidebarCloseButton {
-  display: none;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  width: 32px;
-  height: 32px;
+/* ─── Sidebar toggle & icon buttons ─── */
+.sidebarToggle,
+.newChatTopBtn,
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   border: none;
-  border-radius: var(--radius-md);
   background: transparent;
-  color: var(--text-secondary);
+  color: hsla(40, 6%, 95%, 0.5);
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  flex-shrink: 0;
+  transition: background 150ms ease, color 150ms ease;
 }
 
-/* Backdrop */
+.sidebarToggle:hover,
+.newChatTopBtn:hover,
+.iconBtn:hover {
+  background: rgba(255,255,255,0.08);
+  color: hsl(40 6% 95%);
+}
+
+/* ─── Mobile backdrop ─── */
 .sidebarBackdrop {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.55);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-normal);
-  z-index: 99;
+  transition: opacity 0.25s ease;
+  z-index: 150;
 }
 
 .backdropVisible {
@@ -122,97 +140,79 @@
   pointer-events: auto;
 }
 
-/* Icon buttons in topbar */
-.iconBtn {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: background var(--transition-fast), color var(--transition-fast);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.iconBtn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* New chat button in topbar (shown when sidebar hidden) */
-.newChatTopBtn {
-  display: flex;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.newChatTopBtn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* Loading state */
+/* ─── Loading state ─── */
 .loadingContainer {
+  position: fixed;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  background: var(--bg-page);
-  color: var(--text-secondary);
+  background: hsl(260 87% 3%);
+  color: hsla(40, 6%, 95%, 0.5);
   gap: 16px;
+  font-size: 14px;
+  z-index: 999;
 }
 
 .spinner {
   width: 28px;
   height: 28px;
-  border: 2px solid var(--border);
-  border-top: 2px solid var(--accent);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-top-color: #a855f7;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.9s linear infinite;
 }
 
-/* ─── Responsive ─── */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Mobile — 768px ─── */
 @media (max-width: 768px) {
   .sidebarWrapper {
     position: fixed !important;
     top: 0;
     left: 0;
     height: 100vh;
-    width: var(--sidebar-w) !important;
-    min-width: var(--sidebar-w) !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
     transform: translateX(-100%);
     transition: transform 0.25s var(--ease);
-    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+    box-shadow: 8px 0 32px rgba(0,0,0,0.5);
+    z-index: 200;
   }
 
   .sidebarOpen {
     transform: translateX(0) !important;
   }
 
+  /* Keep collapsed state working on mobile */
   .sidebarHidden {
     transform: translateX(-100%) !important;
-    width: var(--sidebar-w) !important;
-    min-width: var(--sidebar-w) !important;
-  }
-
-  .sidebarCloseButton {
-    display: flex;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
   }
 
   .sidebarBackdrop {
     display: block;
+    z-index: 199;
+  }
+
+  .topBar {
+    padding: 0 12px;
+  }
+
+  .chatPane {
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* ─── Very small screens ─── */
+@media (max-width: 360px) {
+  .topBar {
+    padding: 0 8px;
+    gap: 4px;
   }
 }

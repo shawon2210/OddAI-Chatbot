@@ -42,6 +42,46 @@ export default function Home() {
   // Ref for stream abort control
   const abortControllerRef = useRef(null);
 
+  // Background video fade loop
+  const videoRef = useRef(null);
+  const rafRef   = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    let alive = true;
+    const FADE = 0.5;
+    function loop() {
+      if (!alive) return;
+      const dur = video.duration || 0;
+      if (dur) {
+        const t = video.currentTime;
+        let o = 1;
+        if (t < FADE) o = t / FADE;
+        else if (t > dur - FADE) o = (dur - t) / FADE;
+        video.style.opacity = String(o);
+      }
+      rafRef.current = requestAnimationFrame(loop);
+    }
+    function onEnded() {
+      if (!alive) return;
+      video.style.opacity = '0';
+      cancelAnimationFrame(rafRef.current);
+      setTimeout(() => {
+        if (!alive) return;
+        video.currentTime = 0;
+        video.play().then(() => { if (alive) rafRef.current = requestAnimationFrame(loop); }).catch(() => {});
+      }, 100);
+    }
+    video.play().then(() => { if (alive) rafRef.current = requestAnimationFrame(loop); }).catch(() => {});
+    video.addEventListener('ended', onEnded);
+    return () => {
+      alive = false;
+      video.removeEventListener('ended', onEnded);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   // Redirect if unauthenticated (fallback to middleware)
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -219,8 +259,8 @@ export default function Home() {
     }
   };
 
-  const handleSendMessage = async (text) => {
-    if (!text.trim()) return;
+  const handleSendMessage = async (text, { webSearch = false, reasoning = false, attachments = [] } = {}) => {
+    if (!text.trim() && attachments.length === 0) return;
     if (status !== 'authenticated') {
       router.push('/login');
       return;
@@ -256,10 +296,23 @@ export default function Home() {
       }
     }
 
+    // Build content array if attachments present (multimodal), else plain string
+    const messageContent = attachments.length > 0
+      ? [
+          ...(text ? [{ type: 'text', text }] : []),
+          ...attachments.map((f) =>
+            f.type.startsWith('image/')
+              ? { type: 'image_url', image_url: { url: f.dataUrl } }
+              : { type: 'text', text: `[Attached file: ${f.name}]\n${atob(f.dataUrl.split(',')[1])}` }
+          ),
+        ]
+      : text;
+
     const userMessage = {
       id: Math.random().toString(36).substring(7),
       role: 'user',
-      content: text,
+      content: messageContent,
+      attachments: attachments.map((f) => ({ name: f.name, type: f.type })),
       timestamp: new Date().toISOString(),
     };
 
@@ -294,11 +347,12 @@ export default function Home() {
           messages: newMessagesList.map(m => ({
             id: m.id,
             role: m.role,
-            content: m.content,
+            content: typeof m.content === 'string' ? m.content : (m.content.find(c => c.type === 'text')?.text || ''),
+            attachments: m.attachments || [],
             timestamp: m.timestamp,
           })),
           // Auto rename if it's the first message and title is "New Chat"
-          ...(conversationRef?.title === 'New Chat' ? { title: text.substring(0, 30) + (text.length > 30 ? '...' : '') } : {}),
+          ...(conversationRef?.title === 'New Chat' ? { title: (typeof text === 'string' ? text : text).substring(0, 30) + ((typeof text === 'string' ? text : text).length > 30 ? '...' : '') } : {}),
         }),
       });
 
@@ -327,7 +381,19 @@ export default function Home() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    try {
+  // Throttled streaming update — batch tokens every 30ms instead of per-token
+  let streamBuffer = '';
+  let rafScheduled = false;
+
+  const flushBuffer = () => {
+    const content = streamBuffer;
+    setMessages((prev) =>
+      prev.map((m) => m.id === assistantTempId ? { ...m, content } : m)
+    );
+    rafScheduled = false;
+  };
+
+  try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         credentials: 'same-origin',
@@ -335,6 +401,8 @@ export default function Home() {
         body: JSON.stringify({
           messages: apiMessagesHistory,
           model: modelToUse,
+          webSearch,
+          reasoning,
         }),
         signal: controller.signal,
       });
@@ -365,15 +433,11 @@ export default function Home() {
               const data = JSON.parse(cleanedLine.substring(6));
               const content = data.choices?.[0]?.delta?.content || '';
               assistantResponse += content;
-              
-              // Stream incrementally to UI
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantTempId
-                    ? { ...m, content: assistantResponse }
-                    : m
-                )
-              );
+              streamBuffer = assistantResponse;
+              if (!rafScheduled) {
+                rafScheduled = true;
+                setTimeout(flushBuffer, 30);
+              }
             } catch (err) {
               // Ignore partial JSON parsing errors
             }
@@ -402,7 +466,8 @@ export default function Home() {
           messages: finalMessagesList.map(m => ({
             id: m.id,
             role: m.role,
-            content: m.content,
+            content: typeof m.content === 'string' ? m.content : (m.content.find(c => c.type === 'text')?.text || ''),
+            attachments: m.attachments || [],
             timestamp: m.timestamp,
           })),
         }),
@@ -456,6 +521,16 @@ export default function Home() {
 
   return (
     <div className={styles.appShell}>
+      {/* Fixed full-viewport background video */}
+      <video
+        ref={videoRef}
+        className={styles.videoBg}
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_065045_c44942da-53c6-4804-b734-f9e07fc22e08.mp4"
+        muted
+        playsInline
+        preload="auto"
+      />
+      <div className={styles.videoBlur} aria-hidden="true" />
       {/* Mobile sidebar backdrop */}
       <div
         className={`${styles.sidebarBackdrop} ${isSidebarOpen ? styles.backdropVisible : ''}`}

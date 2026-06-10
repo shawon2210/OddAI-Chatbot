@@ -15,15 +15,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 28px;
+}
+
+/* Logo mark above heading */
+.logoMark {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 0 32px rgba(99,102,241,0.35);
 }
 
 .heading {
+  font-family: 'General Sans', sans-serif;
   font-size: 28px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: hsl(40 6% 95%);
   text-align: center;
   letter-spacing: -0.02em;
+  margin: 0;
 }
 
 /* Suggestion chips */
@@ -37,29 +54,28 @@
 
 .chip {
   padding: 10px 16px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-medium);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--radius-pill);
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: 13px;
+  color: hsla(40, 6%, 95%, 0.65);
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
   white-space: nowrap;
   font-family: var(--font-sans);
   line-height: 1.4;
+  backdrop-filter: blur(4px);
 }
 
 .chip:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-input);
-  color: var(--text-primary);
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: hsl(40 6% 95%);
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-  .heading {
-    font-size: 22px;
-  }
+  .heading { font-size: 22px; }
 
   .chip {
     font-size: 13px;
