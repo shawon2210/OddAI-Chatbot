@@ -272,7 +272,7 @@
 /* ── Footer ── */
 .footerText {
   margin-top: 24px;
-  font-size: 13px;
+  font-size: 12px;
   color: hsla(40, 6%, 95%, 0.45);
 }
 
@@ -283,6 +283,23 @@
   transition: color 150ms ease;
 }
 .footerLink:hover { color: #c4b5fd; text-decoration: none; }
+
+/* ─── Developer credit ─── */
+.devCredit {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: hsla(40, 6%, 95%, 0.45);
+  z-index: 20;
+  white-space: nowrap;
+}
+.devCredit a {
+  color: #a78bfa;
+  text-decoration: underline;
+}
+.devCredit a:hover { color: #c4b5fd; }
 
 @media (max-width: 480px) {
   .card { padding: 32px 22px; }

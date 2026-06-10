@@ -46,7 +46,7 @@ function CodeBlock({ language, value }) {
   );
 }
 
-export default function Message({ message }) {
+export default function Message({ message, index = 0, isNew = false }) {
   const { role, content, timestamp, isStreaming, isError, attachments } = message;
   const isUser = role === 'user';
   const [copied, setCopied] = useState(false);
@@ -68,8 +68,14 @@ export default function Message({ message }) {
 
   const isTyping = !isUser && isStreaming && !displayContent;
 
+  // Stagger animation delay based on message index
+  const animDelay = `${index * 50}ms`;
+
   return (
-    <div className={`${styles.row} ${isUser ? styles.userRow : styles.aiRow}`}>
+    <div
+      className={`${styles.row} ${isUser ? styles.userRow : styles.aiRow} ${isNew ? styles.msgNew : ''}`}
+      style={{ animationDelay: animDelay }}
+    >
       {isUser ? (
         /* ── User bubble ── */
         <div className={styles.userBubble}>
@@ -102,10 +108,13 @@ export default function Message({ message }) {
                 <span>{displayContent}</span>
               </div>
             ) : isTyping ? (
-              <div className={styles.typingDots}>
-                <span className={styles.dot} />
-                <span className={styles.dot} />
-                <span className={styles.dot} />
+              <div className={styles.typingIndicator}>
+                <div className={styles.typingDots}>
+                  <span className={styles.dot} />
+                  <span className={styles.dot} />
+                  <span className={styles.dot} />
+                </div>
+                <span className={styles.typingText}>OddAI is thinking</span>
               </div>
             ) : isStreaming ? (
               <div className={styles.prose}>

@@ -1,7 +1,17 @@
 {
   "name": "oddai-chatbot",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": {
+    "name": "Shawon",
+    "email": "shawonshanto104141@gmail.com",
+    "url": "https://github.com/shawon2210"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shawon2210/OddAI-Chatbot.git"
+  },
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -155,6 +155,11 @@ function LoginContent() {
           <Link href="/register" className={styles.footerLink}>Sign up free</Link>
         </p>
       </div>
+
+      {/* Developer credit */}
+      <footer className={styles.devCredit}>
+        © 2025 Shawon. All rights reserved. | Developed by <a href="https://github.com/shawon2210" target="_blank" rel="noopener noreferrer">shawon2210</a>
+      </footer>
     </div>
   );
 }

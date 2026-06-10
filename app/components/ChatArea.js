@@ -13,7 +13,7 @@ export default function ChatArea({
   onStopGeneration,
   isLoadingMessages,
 }) {
-  const [inputText, setInputText]     = useState('');
+  const [inputText, setInputText] = useState('');
   const [webSearch, setWebSearch]     = useState(false);
   const [reasoning, setReasoning]     = useState(false);
   const [attachments, setAttachments] = useState([]);
@@ -21,6 +21,37 @@ export default function ChatArea({
   const messagesEndRef                = useRef(null);
   const viewportRef                   = useRef(null);
   const fileInputRef                  = useRef(null);
+
+  // Conversation switch animation state
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [displayedMessages, setDisplayedMessages] = useState([]);
+  const prevMessagesRef               = useRef([]);
+
+  // Detect conversation change and trigger transition
+  useEffect(() => {
+    const prevLen = prevMessagesRef.current.length;
+    const currLen = messages.length;
+
+    // Conversation switched (different message set) or first load
+    if (prevLen > 0 && currLen > 0 && prevLen !== currLen) {
+      // Check if it's a different conversation (first message ID changed)
+      const prevFirstId = prevMessagesRef.current[0]?.id;
+      const currFirstId = messages[0]?.id;
+      if (prevFirstId !== currFirstId) {
+        setIsSwitching(true);
+        // Quick fade-in of new messages
+        const timer = setTimeout(() => {
+          setDisplayedMessages(messages);
+          setIsSwitching(false);
+        }, 50);
+        prevMessagesRef.current = messages;
+        return () => clearTimeout(timer);
+      }
+    }
+
+    setDisplayedMessages(messages);
+    prevMessagesRef.current = messages;
+  }, [messages]);
 
   const autoResize = () => {
     const el = textareaRef.current;
@@ -42,7 +73,7 @@ export default function ChatArea({
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isStreaming]);
+  }, [displayedMessages, isStreaming]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -85,16 +116,45 @@ export default function ChatArea({
       {/* Message viewport */}
       <div className={styles.viewport} ref={viewportRef}>
         {isLoadingMessages ? (
-          <div className={styles.loadingWrap}>
-            <Loader size={20} className={styles.spin} />
-            <span>Loading messages…</span>
+          <div className={styles.skeletonWrap}>
+            {/* Skeleton message placeholders */}
+            <div className={styles.skeletonRow}>
+              <div className={styles.skeletonAvatar} />
+              <div className={styles.skeletonBubble}>
+                <div className={styles.skeletonLine} style={{ width: '70%' }} />
+                <div className={styles.skeletonLine} style={{ width: '50%' }} />
+              </div>
+            </div>
+            <div className={styles.skeletonRow + ' ' + styles.skeletonRowRight}>
+              <div className={styles.skeletonBubble + ' ' + styles.skeletonBubbleRight}>
+                <div className={styles.skeletonLine} style={{ width: '40%' }} />
+              </div>
+            </div>
+            <div className={styles.skeletonRow}>
+              <div className={styles.skeletonAvatar} />
+              <div className={styles.skeletonBubble}>
+                <div className={styles.skeletonLine} style={{ width: '80%' }} />
+                <div className={styles.skeletonLine} style={{ width: '60%' }} />
+                <div className={styles.skeletonLine} style={{ width: '35%' }} />
+              </div>
+            </div>
+            <div className={styles.skeletonRow + ' ' + styles.skeletonRowRight}>
+              <div className={styles.skeletonBubble + ' ' + styles.skeletonBubbleRight}>
+                <div className={styles.skeletonLine} style={{ width: '55%' }} />
+              </div>
+            </div>
           </div>
         ) : messages.length === 0 ? (
           <WelcomeScreen onSelectPrompt={(p) => onSendMessage(p, { webSearch, reasoning, attachments: [] })} />
         ) : (
-          <div className={styles.messagesInner}>
-            {messages.map((msg) => (
-              <Message key={msg.id || msg._id} message={msg} />
+          <div className={`${styles.messagesInner} ${isSwitching ? styles.messagesSwitching : ''}`}>
+            {displayedMessages.map((msg, idx) => (
+              <Message
+                key={msg.id || msg._id}
+                message={msg}
+                index={idx}
+                isNew={idx >= prevMessagesRef.current.length}
+              />
             ))}
             <div ref={messagesEndRef} style={{ height: 1 }} />
           </div>

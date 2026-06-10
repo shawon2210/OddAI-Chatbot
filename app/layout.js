@@ -16,7 +16,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata = {
   title: 'OddAI Chatbot — Advanced Surveillance & Threat Intelligence Assistant',
-  description: 'A premium, production-ready AI chatbot assistant powered by OpenRouter free-tier models.',
+  description: 'A premium, production-ready AI chatbot assistant powered by OpenRouter free-tier models. Developed by Shawon.',
+  authors: [{ name: 'Shawon', url: 'https://github.com/shawon2210' }],
   icons: {
     icon: '/favicon.ico',
   },

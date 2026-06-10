@@ -2,7 +2,11 @@
 
 .row {
   padding: 4px 0;
-  animation: msgIn 0.18s var(--ease) both;
+  animation: msgIn 0.25s var(--ease) both;
+}
+
+.msgNew {
+  animation: msgSlideIn 0.35s var(--ease) both;
 }
 
 /* ─── User message ─── */
@@ -22,6 +26,7 @@
   max-width: 70%;
   word-break: break-word;
   white-space: pre-wrap;
+  animation: userMsgPop 0.2s var(--ease) both;
 }
 
 .attachmentBadges {
@@ -216,12 +221,18 @@
   border-radius: var(--radius-md);
 }
 
-/* ─── Typing dots ─── */
+/* ─── Typing indicator ─── */
+.typingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
 .typingDots {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 10px 0;
 }
 
 .dot {
@@ -234,6 +245,13 @@
 
 .dot:nth-child(2) { animation-delay: 0.18s; }
 .dot:nth-child(3) { animation-delay: 0.36s; }
+
+.typingText {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-style: italic;
+  opacity: 0.7;
+}
 
 /* ─── Streaming cursor ─── */
 .cursor {
@@ -258,12 +276,14 @@
   gap: 2px;
   margin-top: 8px;
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .aiRow:hover .actions,
 .aiRow:focus-within .actions {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .actionBtn {
@@ -285,6 +305,27 @@
   color: var(--text-secondary);
 }
 
+/* ─── Animations ─── */
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes msgSlideIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes userMsgPop {
+  from { opacity: 0; transform: scale(0.95) translateX(8px); }
+  to   { opacity: 1; transform: scale(1) translateX(0); }
+}
+
+@keyframes typingBounce {
+  0%, 70%, 100% { transform: scale(0.7); opacity: 0.4; }
+  35%           { transform: scale(1);   opacity: 1; }
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .userBubble {
@@ -294,5 +335,35 @@
 
   .prose {
     font-size: 14px;
+  }
+
+  .aiAvatar {
+    width: 24px;
+    height: 24px;
+  }
+
+  .aiAvatar svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .row {
+    animation: msgIn 0.2s var(--ease) both;
+  }
+}
+
+@media (max-width: 360px) {
+  .userBubble {
+    max-width: 90%;
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .prose {
+    font-size: 13px;
+  }
+
+  .aiWrap {
+    gap: 8px;
   }
 }

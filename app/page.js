@@ -632,6 +632,15 @@ export default function Home() {
           onClose={() => setIsSettingsOpen(false)}
         />
       )}
+
+      {/* Copyright footer */}
+      <footer className={styles.appFooter}>
+        © 2025 Shawon. All rights reserved.
+        <br />
+        <a href="https://github.com/shawon2210" target="_blank" rel="noopener noreferrer">
+          github.com/shawon2210
+        </a>
+      </footer>
     </div>
   );
 }
