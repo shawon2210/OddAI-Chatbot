@@ -3,19 +3,5 @@
   "regions": ["iad1"],
   "buildCommand": "next build",
   "installCommand": "npm install",
-  "outputDirectory": ".next",
-  "env": {
-    "MONGODB_URI": "",
-    "NEXTAUTH_SECRET": "",
-    "NEXTAUTH_URL": "",
-    "GOOGLE_CLIENT_ID": "",
-    "GOOGLE_CLIENT_SECRET": "",
-    "GITHUB_CLIENT_ID": "",
-    "GITHUB_CLIENT_SECRET": "",
-    "OPENROUTER_API_KEY": "",
-    "OPENROUTER_API_KEY_2": "",
-    "OPENROUTER_API_KEY_3": "",
-    "OPENROUTER_API_KEY_4": "",
-    "OPENROUTER_API_KEY_5": ""
-  }
+  "outputDirectory": ".next"
 }
