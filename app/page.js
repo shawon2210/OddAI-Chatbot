@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Search, Share2, Settings, Menu, X } from 'lucide-react';
+import { Search, Settings } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ChatArea from './components/ChatArea';
 import ModelSelector from './components/ModelSelector';
@@ -465,33 +465,21 @@ export default function Home() {
 
       {/* Main Sidebar */}
       <div className={`${styles.sidebarWrapper} ${isSidebarOpen ? styles.sidebarOpen : styles.sidebarHidden}`}>
-        <button
-          className={styles.sidebarCloseButton}
-          onClick={() => setIsSidebarOpen(false)}
-          aria-label="Close sidebar"
-          type="button"
-        >
-          <X size={18} />
-        </button>
         <Sidebar
           conversations={conversations}
           activeId={activeId}
           onSelectConversation={(id) => {
             setActiveId(id);
-            // Auto close sidebar on mobile after selecting
-            if (window.innerWidth <= 768) {
-              setIsSidebarOpen(false);
-            }
+            if (window.innerWidth <= 768) setIsSidebarOpen(false);
           }}
           onNewChat={handleNewChat}
           onDeleteConversation={handleDeleteChat}
           onRenameConversation={handleRenameChat}
           onOpenSettings={() => {
             setIsSettingsOpen(true);
-            if (window.innerWidth <= 768) {
-              setIsSidebarOpen(false);
-            }
+            if (window.innerWidth <= 768) setIsSidebarOpen(false);
           }}
+          onCloseSidebar={() => setIsSidebarOpen(false)}
           isLoading={isLoadingConversations}
           session={session}
         />
@@ -508,8 +496,24 @@ export default function Home() {
               aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
               type="button"
             >
-              {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M9 3v18"/>
+              </svg>
             </button>
+            {!isSidebarOpen && (
+              <button
+                className={styles.newChatTopBtn}
+                onClick={() => handleNewChat()}
+                title="New chat"
+                type="button"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                </svg>
+              </button>
+            )}
             <ModelSelector
               selectedModel={userSettings.selectedModel}
               onModelChange={(modelId) => handleUpdateSettings({ selectedModel: modelId })}
@@ -520,9 +524,6 @@ export default function Home() {
           <div className={styles.topBarRight}>
             <button className={styles.iconBtn} title="Search" type="button">
               <Search size={16} />
-            </button>
-            <button className={styles.iconBtn} title="Share" type="button">
-              <Share2 size={16} />
             </button>
             <button
               className={styles.iconBtn}

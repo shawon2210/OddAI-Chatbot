@@ -4,39 +4,45 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  position: relative;
   background: var(--bg-page);
-  width: 100%;
+  overflow: hidden;
 }
 
-/* Message viewport */
-.messageViewport {
+/* ─── Message viewport ─── */
+.viewport {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  scroll-behavior: smooth;
-}
-
-.messageViewport::-webkit-scrollbar { width: 5px; }
-.messageViewport::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 5px; }
-
-.messagesInner {
-  max-width: var(--msg-max-w);
-  margin: 0 auto;
-  padding: 28px 24px 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
-/* Loading messages */
-.loadingMessages {
+.viewport::-webkit-scrollbar { width: 5px; }
+.viewport::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 5px; }
+
+.messagesInner {
+  width: 100%;
+  max-width: var(--msg-max-w);
+  margin: 0 auto;
+  padding: 32px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Loading */
+.loadingWrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  color: var(--text-secondary);
-  gap: 12px;
+  gap: 10px;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
 }
 
 /* ─── Input area ─── */
@@ -46,131 +52,134 @@
   background: var(--bg-page);
 }
 
-.inputAreaInner {
+.inputWrap {
   max-width: var(--msg-max-w);
   margin: 0 auto;
 }
 
+/* Input box — rounded card */
 .inputBox {
   background: var(--bg-input);
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-xl);
-  padding: 12px 14px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-2xl);
+  padding: 14px 14px 10px 18px;
   display: flex;
   align-items: flex-end;
   gap: 8px;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .inputBox:focus-within {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(127, 119, 221, 0.12);
+  border-color: var(--border-input);
+  box-shadow: 0 0 0 1px var(--border-input), var(--shadow-sm);
 }
 
-/* Toolbar buttons (attach, etc.) */
-.inputToolbar {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  flex-shrink: 0;
-  margin-bottom: 2px;
-}
-
-.inputToolBtn {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-tertiary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.inputToolBtn:hover {
-  background: var(--bg-hover);
-  color: var(--text-secondary);
-}
-
-/* Textarea */
 .textarea {
   flex: 1;
   border: none;
   outline: none;
   background: transparent;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   resize: none;
-  min-height: 24px;
-  max-height: 180px;
+  min-height: 28px;
+  max-height: 200px;
   overflow-y: auto;
-  padding: 4px 0;
+  padding: 0;
+  font-family: var(--font-sans);
 }
 
 .textarea::placeholder {
   color: var(--text-tertiary);
 }
 
-.textarea::-webkit-scrollbar { width: 4px; }
-.textarea::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 4px; }
+.textarea::-webkit-scrollbar { width: 3px; }
+.textarea::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 
-/* Send / Stop button */
-.actionButton {
-  width: 34px;
-  height: 34px;
+/* Send button */
+.sendBtn {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background var(--transition-fast), transform 0.1s;
-  margin-bottom: 2px;
   border: none;
   cursor: pointer;
+  background: var(--bg-active);
+  color: var(--text-tertiary);
+  transition: background var(--transition-fast), color var(--transition-fast), transform 0.1s;
 }
 
-.sendBtn {
-  background: var(--border-medium);
+.sendBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
-.sendBtn.ready {
-  background: var(--accent);
+.sendReady {
+  background: var(--text-primary);
+  color: var(--bg-page);
 }
 
-.sendBtn.ready:hover {
-  background: var(--accent-dark);
-  transform: scale(1.05);
+.sendReady:hover {
+  opacity: 0.88;
+  transform: scale(1.04);
 }
 
-.sendBtn.ready:active {
+.sendReady:active {
   transform: scale(0.96);
 }
 
-.sendBtn svg {
-  color: white;
-}
-
 .stopBtn {
-  background: var(--destructive);
-  color: white;
+  background: var(--text-primary);
+  color: var(--bg-page);
 }
 
 .stopBtn:hover {
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
-.stopBtn:active {
-  transform: scale(0.95);
+/* ─── Bottom toolbar ─── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 0;
 }
 
-/* Hint text */
-.inputHint {
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-medium);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.toolBtn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-input);
+}
+
+/* Disclaimer */
+.disclaimer {
   text-align: center;
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--text-tertiary);
   margin-top: 10px;
   line-height: 1.4;
@@ -179,10 +188,18 @@
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .messagesInner {
-    padding: 20px 16px 8px;
+    padding: 24px 16px 12px;
   }
 
   .inputArea {
-    padding: 10px 14px 16px;
+    padding: 10px 12px 16px;
+  }
+
+  .inputBox {
+    padding: 12px 12px 8px 14px;
+  }
+
+  .textarea {
+    font-size: 15px;
   }
 }

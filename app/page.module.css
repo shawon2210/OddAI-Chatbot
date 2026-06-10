@@ -1,4 +1,4 @@
-/* ─── LAYOUT SHELL ─── */
+/* ─── APP SHELL ─── */
 
 .appShell {
   display: flex;
@@ -9,28 +9,27 @@
   color: var(--text-primary);
 }
 
-/* Sidebar wrapper */
+/* ─── Sidebar wrapper ─── */
 .sidebarWrapper {
   width: var(--sidebar-w);
   min-width: var(--sidebar-w);
   height: 100vh;
   flex-shrink: 0;
   background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: width 0.25s var(--ease), min-width 0.25s var(--ease), transform 0.25s var(--ease);
+  transition: width 0.25s var(--ease), min-width 0.25s var(--ease);
   z-index: 100;
+  position: relative;
 }
 
 .sidebarHidden {
   width: 0;
   min-width: 0;
-  border-right: none;
 }
 
-/* Main chat pane */
+/* ─── Chat pane ─── */
 .chatPane {
   flex: 1;
   display: flex;
@@ -41,78 +40,77 @@
   position: relative;
 }
 
-/* Top bar */
+/* ─── Top bar ─── */
 .topBar {
-  height: 52px;
-  border-bottom: 1px solid var(--border);
+  height: 56px;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  gap: 12px;
+  gap: 8px;
   flex-shrink: 0;
   background: var(--bg-page);
+  position: relative;
+  z-index: 10;
 }
 
 .topBarLeft {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
 }
 
 .topBarRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
+/* Hamburger / toggle */
 .sidebarToggle {
   display: flex;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   border: none;
   background: transparent;
-  color: var(--text-tertiary);
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.sidebarToggle:hover {
-  background: var(--bg-hover);
-}
-
-.sidebarCloseButton {
-  display: none;
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast);
-  z-index: 10;
+  flex-shrink: 0;
 }
 
-.sidebarCloseButton:hover {
+.sidebarToggle:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
 
-/* Sidebar backdrop for mobile */
+/* Close button inside sidebar on mobile */
+.sidebarCloseButton {
+  display: none;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Backdrop */
 .sidebarBackdrop {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.5);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-normal);
@@ -124,15 +122,15 @@
   pointer-events: auto;
 }
 
-/* Icon buttons */
+/* Icon buttons in topbar */
 .iconBtn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   transition: background var(--transition-fast), color var(--transition-fast);
   background: transparent;
   border: none;
@@ -140,6 +138,26 @@
 }
 
 .iconBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* New chat button in topbar (shown when sidebar hidden) */
+.newChatTopBtn {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.newChatTopBtn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
@@ -160,8 +178,8 @@
 .spinner {
   width: 28px;
   height: 28px;
-  border: 3px solid var(--border);
-  border-top: 3px solid var(--accent);
+  border: 2px solid var(--border);
+  border-top: 2px solid var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -169,19 +187,25 @@
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .sidebarWrapper {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     height: 100vh;
     width: var(--sidebar-w) !important;
     min-width: var(--sidebar-w) !important;
-    border-right: 1px solid var(--border) !important;
     transform: translateX(-100%);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s var(--ease);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
   }
 
   .sidebarOpen {
-    transform: translateX(0);
+    transform: translateX(0) !important;
+  }
+
+  .sidebarHidden {
+    transform: translateX(-100%) !important;
+    width: var(--sidebar-w) !important;
+    min-width: var(--sidebar-w) !important;
   }
 
   .sidebarCloseButton {

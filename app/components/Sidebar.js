@@ -2,7 +2,10 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { signOut } from 'next-auth/react';
-import { Plus, MessageSquare, Trash2, Edit2, LogOut, Settings, MoreHorizontal } from 'lucide-react';
+import {
+  Plus, Trash2, Edit2, LogOut, Settings,
+  MoreHorizontal, Search, PenSquare,
+} from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 export default function Sidebar({
@@ -13,35 +16,32 @@ export default function Sidebar({
   onDeleteConversation,
   onRenameConversation,
   onOpenSettings,
+  onCloseSidebar,
   isLoading,
   session,
 }) {
-  const [editingId, setEditingId] = useState(null);
-  const [editTitle, setEditTitle] = useState('');
-  const editInputRef = useRef(null);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const profileMenuRef = useRef(null);
+  const [editingId, setEditingId]         = useState(null);
+  const [editTitle, setEditTitle]         = useState('');
+  const [profileOpen, setProfileOpen]     = useState(false);
+  const editInputRef  = useRef(null);
+  const profileRef    = useRef(null);
 
-  // Close profile menu on outside click
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
-        setIsProfileMenuOpen(false);
-      }
-    }
-    if (isProfileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isProfileMenuOpen]);
-
-  // Focus input when entering edit mode
   useEffect(() => {
     if (editingId && editInputRef.current) {
       editInputRef.current.focus();
       editInputRef.current.select();
     }
   }, [editingId]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    };
+    if (profileOpen) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [profileOpen]);
 
   const handleStartRename = (e, convo) => {
     e.stopPropagation();
@@ -50,127 +50,92 @@ export default function Sidebar({
   };
 
   const handleSaveRename = (id) => {
-    if (editTitle.trim()) {
-      onRenameConversation(id, editTitle.trim());
-    }
+    if (editTitle.trim()) onRenameConversation(id, editTitle.trim());
     setEditingId(null);
   };
 
   const handleKeyDown = (e, id) => {
-    if (e.key === 'Enter') {
-      handleSaveRename(id);
-    } else if (e.key === 'Escape') {
-      setEditingId(null);
-    }
+    if (e.key === 'Enter') handleSaveRename(id);
+    else if (e.key === 'Escape') setEditingId(null);
   };
 
-  // Group conversations by date
-  const groupedConversations = useMemo(() => {
-    const today = [];
-    const yesterday = [];
-    const last7 = [];
-    const earlier = [];
+  const grouped = useMemo(() => {
+    const now   = new Date();
+    const sod   = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const soy   = new Date(sod); soy.setDate(soy.getDate() - 1);
+    const so7   = new Date(sod); so7.setDate(so7.getDate() - 7);
+    const so30  = new Date(sod); so30.setDate(so30.getDate() - 30);
 
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfYesterday = new Date(startOfToday);
-    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-    const startOf7Days = new Date(startOfToday);
-    startOf7Days.setDate(startOf7Days.getDate() - 7);
+    const buckets = { Today: [], Yesterday: [], 'Previous 7 days': [], 'Previous 30 days': [], Earlier: [] };
 
-    conversations.forEach((convo) => {
-      const timestamp = convo.updatedAt || convo.createdAt;
-      const date = timestamp ? new Date(timestamp) : null;
-
-      if (!date || Number.isNaN(date.getTime())) {
-        earlier.push(convo);
-        return;
-      }
-
-      if (date >= startOfToday) {
-        today.push(convo);
-      } else if (date >= startOfYesterday) {
-        yesterday.push(convo);
-      } else if (date >= startOf7Days) {
-        last7.push(convo);
-      } else {
-        earlier.push(convo);
-      }
+    conversations.forEach((c) => {
+      const d = new Date(c.updatedAt || c.createdAt);
+      if      (d >= sod)  buckets['Today'].push(c);
+      else if (d >= soy)  buckets['Yesterday'].push(c);
+      else if (d >= so7)  buckets['Previous 7 days'].push(c);
+      else if (d >= so30) buckets['Previous 30 days'].push(c);
+      else                buckets['Earlier'].push(c);
     });
 
-    return { Today: today, Yesterday: yesterday, 'Last 7 days': last7, Earlier: earlier };
+    return buckets;
   }, [conversations]);
 
-  const userName = session?.user?.name || session?.user?.email || 'User';
-  const userInitials = userName
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .substring(0, 2)
-    .toUpperCase();
-  const userAvatar = session?.user?.image;
+  const userName    = session?.user?.name || session?.user?.email || 'User';
+  const userInitial = userName.trim()[0]?.toUpperCase() || 'U';
+  const userAvatar  = session?.user?.image;
 
   return (
-    <aside className={styles.sidebar}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.logo}>
-          <div className={styles.logoIcon}>✦</div>
-          <span>OddAI</span>
-        </div>
+    <nav className={styles.sidebar}>
+      {/* Top icon row */}
+      <div className={styles.topActions}>
         <button
-          className={styles.headerIconBtn}
+          className={styles.iconBtn}
+          onClick={onCloseSidebar}
           title="Close sidebar"
-          onClick={() => {
-            // This will be handled by parent on mobile
-          }}
           type="button"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M3 12h18M3 6h18M3 18h18" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M9 3v18"/>
           </svg>
+        </button>
+
+        <button
+          className={styles.iconBtn}
+          onClick={() => onNewChat()}
+          title="New chat"
+          type="button"
+        >
+          <PenSquare size={18} />
         </button>
       </div>
 
-      {/* New chat button */}
-      <button className={styles.newChatBtn} onClick={() => onNewChat()} type="button">
-        <Plus size={14} />
-        New chat
-      </button>
-
-      {/* Conversation history */}
-      <div className={styles.threadSection}>
+      {/* Thread list */}
+      <div className={styles.threadList}>
         {isLoading ? (
-          <div className={styles.loaderContainer}>
+          <div className={styles.loaderWrap}>
             <div className={styles.loaderSpinner} />
-            <span>Loading chats...</span>
+            <span>Loading…</span>
           </div>
         ) : conversations.length === 0 ? (
-          <div className={styles.emptyState}>
-            <p>No conversations yet.</p>
-            <p className={styles.emptyStateHint}>Your chat history will appear here.</p>
-          </div>
+          <div className={styles.emptyState}>No conversations yet</div>
         ) : (
-          Object.entries(groupedConversations).map(([heading, items]) =>
-            items.length > 0 ? (
-              <div key={heading} className={styles.sectionGroup}>
-                <div className={styles.sectionHeader}>{heading}</div>
+          Object.entries(grouped).map(([label, items]) =>
+            items.length === 0 ? null : (
+              <div key={label} className={styles.sectionGroup}>
+                <div className={styles.sectionLabel}>{label}</div>
                 {items.map((convo) => {
-                  const isActive = convo._id === activeId;
+                  const isActive  = convo._id === activeId;
                   const isEditing = convo._id === editingId;
-
                   return (
                     <div
                       key={convo._id}
-                      className={`${styles.threadItem} ${isActive ? styles.activeItem : ''}`}
+                      className={`${styles.threadItem} ${isActive ? styles.activeThread : ''}`}
                       onClick={() => !isEditing && onSelectConversation(convo._id)}
-                      onDoubleClick={(e) => !isEditing && handleStartRename(e, convo)}
                     >
-                      <MessageSquare size={16} className={styles.threadIcon} />
                       {isEditing ? (
                         <input
                           ref={editInputRef}
-                          type="text"
                           className={styles.renameInput}
                           value={editTitle}
                           onChange={(e) => setEditTitle(e.target.value)}
@@ -183,6 +148,7 @@ export default function Sidebar({
                           {convo.title}
                         </span>
                       )}
+
                       {!isEditing && (
                         <div className={styles.itemActions}>
                           <button
@@ -191,20 +157,18 @@ export default function Sidebar({
                             title="Rename"
                             type="button"
                           >
-                            <Edit2 size={13} />
+                            <Edit2 size={14} />
                           </button>
                           <button
-                            className={`${styles.actionBtn} ${styles.deleteAction}`}
+                            className={`${styles.actionBtn} ${styles.deleteBtn}`}
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (confirm('Delete this conversation?')) {
-                                onDeleteConversation(convo._id);
-                              }
+                              if (confirm('Delete this conversation?')) onDeleteConversation(convo._id);
                             }}
                             title="Delete"
                             type="button"
                           >
-                            <Trash2 size={13} />
+                            <Trash2 size={14} />
                           </button>
                         </div>
                       )}
@@ -212,64 +176,41 @@ export default function Sidebar({
                   );
                 })}
               </div>
-            ) : null
+            )
           )
         )}
       </div>
 
-      {/* User profile footer */}
-      <div className={styles.footer} ref={profileMenuRef}>
-        {isProfileMenuOpen && (
+      {/* Footer / profile */}
+      <div className={styles.footer} ref={profileRef}>
+        {profileOpen && (
           <div className={styles.profileMenu}>
             <button
-              onClick={() => {
-                onOpenSettings();
-                setIsProfileMenuOpen(false);
-              }}
               className={styles.menuItem}
+              onClick={() => { onOpenSettings(); setProfileOpen(false); }}
               type="button"
             >
-              <Settings size={16} />
-              <span>Settings</span>
+              <Settings size={16} /> Settings
             </button>
+            <div className={styles.menuDivider} />
             <button
+              className={`${styles.menuItem} ${styles.logoutItem}`}
               onClick={() => signOut({ callbackUrl: '/login' })}
-              className={`${styles.menuItem} ${styles.logoutBtn}`}
               type="button"
             >
-              <LogOut size={16} />
-              <span>Log out</span>
+              <LogOut size={16} /> Log out
             </button>
           </div>
         )}
-        <div
-          className={styles.profilePill}
-          onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-        >
-          {userAvatar ? (
-            <img src={userAvatar} alt={userName} className={styles.userAvatarPlaceholder} style={{ objectFit: 'cover' }} />
-          ) : (
-            <div className={styles.userAvatarPlaceholder}>{userInitials}</div>
-          )}
-          <div className={styles.userDetails}>
-            <span className={styles.userName} title={userName}>
-              {userName}
-            </span>
-            <span className={styles.userPlan}>Free plan</span>
+
+        <div className={styles.profileRow} onClick={() => setProfileOpen((p) => !p)}>
+          <div className={styles.avatar}>
+            {userAvatar ? <img src={userAvatar} alt={userName} /> : userInitial}
           </div>
-          <button
-            className={styles.actionBtn}
-            title="More"
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsProfileMenuOpen(!isProfileMenuOpen);
-            }}
-          >
-            <MoreHorizontal size={14} />
-          </button>
+          <span className={styles.userName}>{userName}</span>
+          <MoreHorizontal size={16} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
         </div>
       </div>
-    </aside>
+    </nav>
   );
 }

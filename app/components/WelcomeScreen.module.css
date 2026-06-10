@@ -1,112 +1,75 @@
-/* ─── WELCOME / EMPTY STATE ─── */
+/* ─── WELCOME SCREEN ─── */
 
 .container {
-  max-width: var(--msg-max-w);
-  margin: 0 auto;
-  padding: 60px 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  padding: 24px;
 }
 
-.heroSection {
-  text-align: center;
-  margin-bottom: 40px;
+.inner {
+  width: 100%;
+  max-width: var(--msg-max-w);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 32px;
 }
 
-.logoContainer {
-  margin-bottom: 8px;
-}
-
-.logoSvg {
-  width: 56px;
-  height: 56px;
-}
-
-.title {
+.heading {
   font-size: 28px;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.03em;
-  margin-bottom: 4px;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
-.gradientText {
-  /* Uses the accent color directly */
-}
-
-.subtitle {
-  font-size: 15px;
-  color: var(--text-tertiary);
-  line-height: 1.6;
-  max-width: 480px;
-}
-
-/* Suggestion grid */
-.promptsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 8px;
-}
-
-.promptCard {
-  padding: 14px 16px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  text-align: left;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+/* Suggestion chips */
+.suggestions {
   display: flex;
-  flex-direction: column;
-  min-height: 110px;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
 }
 
-.promptCard:hover {
-  border-color: var(--accent);
-  background: var(--accent-light);
-}
-
-.iconBox {
-  font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.cardIcon {
+.chip {
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
   color: var(--text-secondary);
-}
-
-.cardTitle {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: 3px;
-}
-
-.cardDesc {
-  font-size: 12px;
-  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  font-family: var(--font-sans);
   line-height: 1.4;
+}
+
+.chip:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-input);
+  color: var(--text-primary);
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-  .container {
-    padding: 36px 16px 16px;
-  }
-
-  .title {
+  .heading {
     font-size: 22px;
   }
 
-  .promptsGrid {
-    grid-template-columns: 1fr 1fr;
+  .chip {
+    font-size: 13px;
+    padding: 9px 14px;
+    white-space: normal;
+    text-align: left;
   }
-}
 
-@media (max-width: 480px) {
-  .promptsGrid {
-    grid-template-columns: 1fr;
+  .suggestions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

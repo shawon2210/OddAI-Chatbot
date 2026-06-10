@@ -1,119 +1,103 @@
-/* ─── OddAI Design System (Claude-like) ─── */
+/* ─── OddAI Design System — ChatGPT-style ─── */
 
 :root {
-  /* Fonts */
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
 
-  /* Radii */
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  16px;
-  --radius-xl:  24px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
   --radius-pill: 999px;
 
-  /* Layout */
   --sidebar-w: 260px;
-  --msg-max-w: 740px;
+  --msg-max-w: 680px;
 
-  /* Accent — Purple */
-  --accent:         #7F77DD;
-  --accent-dark:    #534AB7;
-  --accent-light:   #EEEDFE;
-  --accent-hover:   #6e63d0;
-  --accent-subtle:  rgba(127, 119, 221, 0.15);
-  --accent-glow:    rgba(127, 119, 221, 0.10);
-  --border-focus:   #7F77DD;
+  --accent:        #10a37f;
+  --accent-hover:  #0d8f6f;
+  --accent-light:  rgba(16, 163, 127, 0.12);
+  --accent-subtle: rgba(16, 163, 127, 0.08);
+  --border-focus:  #10a37f;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.20);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.30);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.22);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.32);
 
-  /* Semantic */
   --destructive: #ef4444;
-  --success: #22c55e;
+  --success:     #10a37f;
 
-  /* Easing */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Transitions */
-  --transition-fast: 150ms var(--ease);
+  --transition-fast:   150ms var(--ease);
   --transition-normal: 250ms var(--ease);
 }
 
-/* ─── Light Theme (default) ─── */
+/* ─── Dark Theme (default, ChatGPT-style) ─── */
 :root,
-[data-theme="light"] {
-  --bg-page:        #F5F4EF;
-  --bg-sidebar:     #EEECE5;
-  --bg-surface:     #FFFFFF;
-  --bg-input:       #FFFFFF;
-  --bg-user-msg:    #2D2C2A;
-  --bg-code:        #F0EEE8;
-  --bg-hover:       rgba(0, 0, 0, 0.04);
-  --bg-active:      rgba(0, 0, 0, 0.07);
+[data-theme="dark"] {
+  --bg-page:        #212121;
+  --bg-sidebar:     #171717;
+  --bg-surface:     #2f2f2f;
+  --bg-input:       #2f2f2f;
+  --bg-user-msg:    #2f2f2f;
+  --bg-code:        #1a1a1a;
+  --bg-hover:       rgba(255,255,255,0.06);
+  --bg-active:      rgba(255,255,255,0.10);
 
-  --text-primary:   #1A1916;
-  --text-secondary: #5C5A55;
-  --text-tertiary:  #9A9890;
-  --text-user-msg:  #FFFFFF;
-  --text-accent:    #534AB7;
+  --text-primary:   #ececec;
+  --text-secondary: #b4b4b4;
+  --text-tertiary:  #8e8ea0;
+  --text-user-msg:  #ececec;
+  --text-accent:    #10a37f;
 
-  --border:         rgba(0, 0, 0, 0.09);
-  --border-medium:  rgba(0, 0, 0, 0.14);
-  --border-input:   rgba(0, 0, 0, 0.18);
+  --border:         rgba(255,255,255,0.08);
+  --border-medium:  rgba(255,255,255,0.12);
+  --border-input:   rgba(255,255,255,0.15);
 
-  --scrollbar-thumb: rgba(0, 0, 0, 0.10);
-  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb:       rgba(255,255,255,0.10);
+  --scrollbar-thumb-hover: rgba(255,255,255,0.18);
 
-  /* Glass / Auth pages */
-  --bg-glass: rgba(255, 255, 255, 0.88);
-  --accent-primary: #7F77DD;
-  --accent-secondary: #534AB7;
-  --accent-gradient: linear-gradient(135deg, #7F77DD, #534AB7);
-  --accent-glow-subtle: 0 4px 16px rgba(127, 119, 221, 0.25);
+  --bg-glass:        rgba(33,33,33,0.92);
+  --accent-primary:  #10a37f;
+  --accent-secondary:#0d8f6f;
+  --accent-gradient: linear-gradient(135deg, #10a37f, #0d8f6f);
+  --accent-glow-subtle: 0 4px 16px rgba(16,163,127,0.25);
 }
 
-/* ─── Dark Theme ─── */
-[data-theme="dark"] {
-  --bg-page:        #1A1916;
-  --bg-sidebar:     #141412;
-  --bg-surface:     #222220;
-  --bg-input:       #2A2926;
-  --bg-user-msg:    #EEEDFE;
-  --bg-code:        #2A2926;
-  --bg-hover:       rgba(255, 255, 255, 0.05);
-  --bg-active:      rgba(255, 255, 255, 0.09);
+/* ─── Light Theme ─── */
+[data-theme="light"] {
+  --bg-page:        #ffffff;
+  --bg-sidebar:     #f9f9f9;
+  --bg-surface:     #f4f4f4;
+  --bg-input:       #f4f4f4;
+  --bg-user-msg:    #f4f4f4;
+  --bg-code:        #f0f0f0;
+  --bg-hover:       rgba(0,0,0,0.05);
+  --bg-active:      rgba(0,0,0,0.08);
 
-  --text-primary:   #F0EEE8;
-  --text-secondary: #A8A69E;
-  --text-tertiary:  #6A6862;
-  --text-user-msg:  #1A1916;
-  --text-accent:    #AFA9EC;
+  --text-primary:   #0d0d0d;
+  --text-secondary: #444444;
+  --text-tertiary:  #8e8ea0;
+  --text-user-msg:  #0d0d0d;
+  --text-accent:    #0d8f6f;
 
-  --border:         rgba(255, 255, 255, 0.07);
-  --border-medium:  rgba(255, 255, 255, 0.11);
-  --border-input:   rgba(255, 255, 255, 0.14);
+  --border:         rgba(0,0,0,0.08);
+  --border-medium:  rgba(0,0,0,0.12);
+  --border-input:   rgba(0,0,0,0.15);
 
-  --scrollbar-thumb: rgba(255, 255, 255, 0.10);
-  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.18);
+  --scrollbar-thumb:       rgba(0,0,0,0.10);
+  --scrollbar-thumb-hover: rgba(0,0,0,0.18);
 
-  /* Glass / Auth pages */
-  --bg-glass: rgba(26, 25, 22, 0.88);
-  --accent-primary: #AFA9EC;
-  --accent-secondary: #7F77DD;
-  --accent-gradient: linear-gradient(135deg, #AFA9EC, #7F77DD);
-  --accent-glow-subtle: 0 4px 16px rgba(175, 169, 236, 0.25);
+  --bg-glass:        rgba(255,255,255,0.92);
+  --accent-primary:  #10a37f;
+  --accent-secondary:#0d8f6f;
+  --accent-gradient: linear-gradient(135deg, #10a37f, #0d8f6f);
+  --accent-glow-subtle: 0 4px 16px rgba(16,163,127,0.25);
 }
 
 /* ─── Base Resets ─── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
@@ -125,21 +109,12 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
 textarea { font-family: inherit; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-::selection {
-  background: var(--accent-subtle);
-  color: inherit;
-}
+::selection { background: var(--accent-light); color: inherit; }
 
 /* ─── Scrollbar ─── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -147,30 +122,14 @@ a:hover { text-decoration: underline; }
 ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
-/* ─── Utility Animations ─── */
-.fade-in { animation: fadeIn 250ms var(--ease); }
+/* ─── Animations ─── */
+.fade-in  { animation: fadeIn  250ms var(--ease); }
 .slide-up { animation: slideUp 350ms var(--ease); }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes msgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin    { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes msgIn   { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes typingBounce {
   0%, 70%, 100% { transform: scale(0.7); opacity: 0.4; }
   35%           { transform: scale(1);   opacity: 1; }
@@ -193,14 +152,8 @@ a:hover { text-decoration: underline; }
   z-index: 999;
   white-space: nowrap;
 }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

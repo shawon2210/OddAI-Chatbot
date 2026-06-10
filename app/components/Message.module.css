@@ -1,46 +1,50 @@
-/* ─── MESSAGE BUBBLES ─── */
+/* ─── MESSAGE ROW ─── */
 
-.messageRow {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 6px 0;
-  animation: msgIn 0.2s var(--ease) both;
+.row {
+  padding: 4px 0;
+  animation: msgIn 0.18s var(--ease) both;
 }
 
-/* User messages — right-aligned, dark bubble */
+/* ─── User message ─── */
 .userRow {
-  flex-direction: row-reverse;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0;
 }
 
-.userRow .bubble {
+.userBubble {
   background: var(--bg-user-msg);
-  color: var(--text-user-msg);
-  border-radius: var(--radius-xl) var(--radius-sm) var(--radius-xl) var(--radius-xl);
-  padding: 10px 16px;
+  color: var(--text-primary);
+  padding: 12px 18px;
+  border-radius: 18px 18px 4px 18px;
   font-size: 15px;
-  line-height: 1.6;
-  max-width: 80%;
+  line-height: 1.65;
+  max-width: 70%;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 
-/* AI messages — left-aligned, no bubble background, avatar on left */
+/* ─── AI message ─── */
 .aiRow {
+  padding: 16px 0 8px;
+}
+
+.aiWrap {
+  display: flex;
   align-items: flex-start;
+  gap: 12px;
 }
 
 .aiAvatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--accent-light);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--accent);
+  color: var(--text-primary);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -50,91 +54,152 @@
   min-width: 0;
 }
 
-.aiName {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-tertiary);
-  margin-bottom: 5px;
-  letter-spacing: 0.01em;
-}
-
-/* Base bubble for AI */
-.bubble {
+/* ─── Prose / markdown ─── */
+.prose {
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-primary);
 }
 
-/* Error bubble */
-.errorBubble {
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  background: rgba(239, 68, 68, 0.05);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  font-size: 13px;
-}
+.prose p { margin: 0 0 12px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
 
-.errorIcon {
-  color: var(--destructive);
-  flex-shrink: 0;
-}
+.prose h1 { font-size: 20px; font-weight: 600; margin: 20px 0 8px; letter-spacing: -0.02em; }
+.prose h2 { font-size: 17px; font-weight: 600; margin: 18px 0 6px; }
+.prose h3 { font-size: 15px; font-weight: 600; margin: 14px 0 4px; }
 
-/* ─── Message actions ─── */
-.actionBar {
-  display: flex;
-  gap: 2px;
-  margin-top: 6px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
+.prose ul, .prose ol { padding-left: 22px; margin: 6px 0 12px; }
+.prose li { margin-bottom: 4px; line-height: 1.65; }
 
-.messageRow:hover .actionBar,
-.messageRow:focus-within .actionBar {
-  opacity: 1;
-}
-
-.actionBtn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  color: var(--text-tertiary);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s;
-}
-
-.actionBtn:hover {
-  background: var(--bg-hover);
+.prose blockquote {
+  border-left: 3px solid var(--border-medium);
+  padding: 4px 0 4px 16px;
+  margin: 10px 0;
   color: var(--text-secondary);
 }
 
-/* Timestamp */
-.timestamp {
-  font-size: 11px;
-  color: var(--text-tertiary);
-  margin-top: 4px;
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
 }
 
-/* ─── Typing indicator ─── */
-.typingGroup {
+/* Inline code */
+.inlineCode {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--text-primary);
+}
+
+/* ─── Code block ─── */
+.codeBlock {
+  margin: 12px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.codeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #2a2a2a;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.codeLang {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-mono);
+}
+
+.copyCodeBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.12s, background 0.12s;
+  font-family: var(--font-sans);
+}
+
+.copyCodeBtn:hover {
+  color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ─── Table ─── */
+.tableWrap {
+  overflow-x: auto;
+  margin: 12px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.table th {
+  background: var(--bg-surface);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* ─── Link ─── */
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(16,163,127,0.4);
+  text-underline-offset: 2px;
+}
+
+.link:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* ─── Error ─── */
+.errorBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f87171;
+  font-size: 14px;
+  padding: 10px 14px;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: var(--radius-md);
+}
+
+/* ─── Typing dots ─── */
+.typingDots {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 0 2px;
-}
-
-.typingIndicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  padding: 10px 0;
 }
 
 .dot {
@@ -148,225 +213,64 @@
 .dot:nth-child(2) { animation-delay: 0.18s; }
 .dot:nth-child(3) { animation-delay: 0.36s; }
 
-.typingLabel {
-  font-size: 13px;
-  color: var(--text-tertiary);
-  margin-left: 4px;
+/* ─── Streaming cursor ─── */
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 15px;
+  background: var(--text-primary);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
 }
 
-/* ─── Markdown content ─── */
-.markdownContent {
-  width: 100%;
+@keyframes blink {
+  from, to { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
-.md h1 { font-size: 19px; font-weight: 600; margin: 18px 0 8px; letter-spacing: -0.02em; }
-.md h2 { font-size: 16px; font-weight: 600; margin: 16px 0 6px; }
-.md h3 { font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
-.md p  { margin: 0 0 10px; }
-.md p:last-child { margin-bottom: 0; }
-.md strong { font-weight: 600; }
-.md em { font-style: italic; }
-.md ul, .md ol { padding-left: 20px; margin: 6px 0 10px; }
-.md li { margin-bottom: 4px; line-height: 1.6; }
-.md a { color: var(--accent); }
-
-.md code {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
-  color: var(--text-primary);
-}
-
-.md pre {
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow-x: auto;
-  margin: 10px 0;
-  position: relative;
-}
-
-.md pre code {
-  display: block;
-  padding: 14px 16px;
-  background: none;
-  border: none;
-  font-size: 13px;
-  line-height: 1.6;
-  border-radius: 0;
-  color: var(--text-primary);
-}
-
-.codeBlockHeader {
+/* ─── Action bar ─── */
+.actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 7px 14px;
-  border-bottom: 1px solid var(--border);
+  gap: 2px;
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
-.codeLang {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-tertiary);
-  font-family: var(--font-mono);
-  text-transform: lowercase;
+.aiRow:hover .actions,
+.aiRow:focus-within .actions {
+  opacity: 1;
 }
 
-.copyCodeBtn {
-  font-size: 11px;
+.actionBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-tertiary);
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
   background: transparent;
   border: none;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
 }
 
-.copyCodeBtn:hover {
-  background: var(--bg-active);
+.actionBtn:hover {
+  background: var(--bg-hover);
   color: var(--text-secondary);
-}
-
-.copiedIcon {
-  color: var(--success);
-}
-
-.md blockquote {
-  border-left: 3px solid var(--accent);
-  padding: 2px 0 2px 14px;
-  margin: 8px 0;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-.md hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 14px 0;
-}
-
-.md table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-.md th, .md td {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  text-align: left;
-}
-
-.md th {
-  background: var(--bg-code);
-  font-weight: 600;
-  font-size: 13px;
-}
-
-/* ─── Cursor (streaming) ─── */
-.cursor {
-  display: inline-block;
-  width: 2px;
-  height: 14px;
-  background-color: var(--accent);
-  margin-left: 2px;
-  vertical-align: text-bottom;
-  animation: blink 1s infinite step-end;
-}
-
-@keyframes blink {
-  from, to { background-color: transparent; }
-  50%      { background-color: var(--accent); }
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-  .messageRow {
-    padding: 6px 0;
-  }
-
-  .userRow .bubble {
+  .userBubble {
     max-width: 85%;
+    font-size: 14px;
   }
-}
 
-/* ─── User avatar ─── */
-.userAvatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-/* ─── Inline code ─── */
-.inlineCode {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
-  color: var(--text-primary);
-}
-
-/* ─── Table wrapper ─── */
-.tableWrapper {
-  overflow-x: auto;
-  margin: 10px 0;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  text-align: left;
-}
-
-.table th,
-.table td {
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-}
-
-.table th {
-  background: var(--bg-code);
-  font-weight: 600;
-  font-size: 13px;
-}
-
-/* ─── Link ─── */
-.link {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-/* ─── Code block container ─── */
-.codeBlockContainer {
-  margin: 10px 0;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  background: var(--bg-code);
-  overflow: hidden;
-}
-
-.codeBlockBody {
-  overflow-x: auto;
+  .prose {
+    font-size: 14px;
+  }
 }
