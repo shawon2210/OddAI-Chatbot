@@ -1,0 +1,20 @@
+[    1112ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://odd-ai-chatbot-8j47.vercel.app/login:0
+[    1349ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/session:0
+[    1350ms] [ERROR] [next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error Unexpected token '<', "<!DOCTYPE "... is not valid JSON {error: Object, url: /api/auth/session, message: Unexpected token '<', "<!DOCTYPE "... is not valid JSON} @ https://odd-ai-chatbot-8j47.vercel.app/_next/static/chunks/2v0pn8-dzxeaa.js:0
+[    1974ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/_log:0
+[    5142ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/providers:0
+[    5162ms] [ERROR] [next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error Unexpected token '<', "<!DOCTYPE "... is not valid JSON {error: Object, url: /api/auth/providers, message: Unexpected token '<', "<!DOCTYPE "... is not valid JSON} @ https://odd-ai-chatbot-8j47.vercel.app/_next/static/chunks/2v0pn8-dzxeaa.js:0
+[    5717ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/_log:0
+[    5719ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/error:0
+[    8761ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://odd-ai-chatbot-8j47.vercel.app/login:0
+[    9037ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/session:0
+[    9039ms] [ERROR] [next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error Unexpected token '<', "<!DOCTYPE "... is not valid JSON {error: Object, url: /api/auth/session, message: Unexpected token '<', "<!DOCTYPE "... is not valid JSON} @ https://odd-ai-chatbot-8j47.vercel.app/_next/static/chunks/2v0pn8-dzxeaa.js:0
+[    9611ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/_log:0
+[   10592ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/providers:0
+[   10606ms] [ERROR] [next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error Unexpected token '<', "<!DOCTYPE "... is not valid JSON {error: Object, url: /api/auth/providers, message: Unexpected token '<', "<!DOCTYPE "... is not valid JSON} @ https://odd-ai-chatbot-8j47.vercel.app/_next/static/chunks/2v0pn8-dzxeaa.js:0
+[   10945ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/_log:0
+[   11057ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://odd-ai-chatbot-8j47.vercel.app/api/auth/error:0

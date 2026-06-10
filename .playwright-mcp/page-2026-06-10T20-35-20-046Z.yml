@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "← OddAI" [ref=e3] [cursor=pointer]:
+      - /url: /landing
+      - generic [ref=e4]: ←
+      - text: OddAI
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: O
+        - generic [ref=e8]: OddAI
+      - heading "Welcome back" [level=1] [ref=e9]
+      - paragraph [ref=e10]: Sign in to your account to continue
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: Email
+          - generic [ref=e14]:
+            - img
+            - textbox "Email" [ref=e15]:
+              - /placeholder: you@domain.com
+        - generic [ref=e16]:
+          - generic [ref=e17]: Password
+          - generic [ref=e18]:
+            - img
+            - textbox "Password" [ref=e19]:
+              - /placeholder: ••••••••
+        - button "Sign In" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]: Sign In
+          - img [ref=e22]
+      - generic [ref=e25]: or continue with
+      - generic [ref=e26]:
+        - button "Google" [ref=e27] [cursor=pointer]:
+          - img [ref=e28]
+          - text: Google
+        - button "GitHub" [ref=e33] [cursor=pointer]:
+          - img [ref=e34]
+          - text: GitHub
+      - paragraph [ref=e36]:
+        - text: Don't have an account?
+        - link "Sign up free" [ref=e37] [cursor=pointer]:
+          - /url: /register
+    - contentinfo [ref=e38]:
+      - text: © 2025 Shawon. All rights reserved. | Developed by
+      - link "shawon2210" [ref=e39] [cursor=pointer]:
+        - /url: https://github.com/shawon2210
+  - alert [ref=e40]

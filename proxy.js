@@ -6,11 +6,14 @@ const publicPaths = ['/login', '/register', '/landing', '/favicon.ico'];
 export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
+  // Allow all auth-related paths to pass through
   if (
     publicPaths.some((p) => pathname.startsWith(p)) ||
     pathname.startsWith('/api/auth') ||
     pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon')
+    pathname.startsWith('/favicon') ||
+    pathname.startsWith('/api/trpc') ||
+    pathname.startsWith('/api/uploadthing')
   ) {
     return NextResponse.next();
   }
@@ -34,6 +37,6 @@ export async function proxy(request) {
 
 export const config = {
   matcher: [
-    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|api/trpc|api/uploadthing).*)',
   ],
 };
