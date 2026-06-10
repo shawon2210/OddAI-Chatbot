@@ -27,6 +27,9 @@ export default function ChatArea({
   const [displayedMessages, setDisplayedMessages] = useState([]);
   const prevMessagesRef               = useRef([]);
 
+  // Calculate isNew using a ref that's updated in the effect (not accessed during render)
+  const [isNewMap, setIsNewMap] = useState({});
+
   // Detect conversation change and trigger transition
   useEffect(() => {
     const prevLen = prevMessagesRef.current.length;
@@ -39,18 +42,26 @@ export default function ChatArea({
       const currFirstId = messages[0]?.id;
       if (prevFirstId !== currFirstId) {
         setIsSwitching(true);
+        // Build map of which messages are new
+        const newMap = {};
+        for (let i = prevLen; i < currLen; i++) {
+          newMap[messages[i].id] = true;
+        }
         // Quick fade-in of new messages
         const timer = setTimeout(() => {
           setDisplayedMessages(messages);
           setIsSwitching(false);
         }, 50);
         prevMessagesRef.current = messages;
+        setIsNewMap(newMap);
         return () => clearTimeout(timer);
       }
     }
 
     setDisplayedMessages(messages);
     prevMessagesRef.current = messages;
+    // For same conversation or initial load, no messages are "new"
+    setIsNewMap({});
   }, [messages]);
 
   const autoResize = () => {
@@ -153,7 +164,7 @@ export default function ChatArea({
                 key={msg.id || msg._id}
                 message={msg}
                 index={idx}
-                isNew={idx >= prevMessagesRef.current.length}
+                isNew={isNewMap[msg.id] || false}
               />
             ))}
             <div ref={messagesEndRef} style={{ height: 1 }} />

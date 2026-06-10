@@ -27,14 +27,14 @@ export default function Home() {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
-  // Settings state
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [userSettings, setUserSettings] = useState({
-    theme: 'dark',
-    selectedModel: 'openrouter/free',
-    systemPrompt: '',
-    customApiKey: '',
-  });
+// Settings state
+   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+   const [userSettings, setUserSettings] = useState({
+     theme: 'dark',
+     selectedModel: 'openrouter/auto',
+     systemPrompt: '',
+     customApiKey: '',
+   });
 
   // Sidebar visibility on mobile
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
