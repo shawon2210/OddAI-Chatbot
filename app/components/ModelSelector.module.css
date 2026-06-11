@@ -167,5 +167,17 @@
   .dropdownMenu {
     width: calc(100vw - 32px);
     left: 0;
+    right: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .dropdownMenu {
+    width: calc(100vw - 16px);
+    left: 0;
+  }
+
+  .triggerName {
+    font-size: 13px;
   }
 }

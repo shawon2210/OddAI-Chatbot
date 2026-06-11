@@ -288,3 +288,35 @@
     padding: 16px;
   }
 }
+
+@media (max-width: 360px) {
+  .modalOverlay {
+    padding: 8px;
+  }
+
+  .modalContent {
+    max-height: 96vh;
+    border-radius: var(--radius-md);
+  }
+
+  .modalHeader {
+    padding: 14px 14px 12px;
+  }
+
+  .modalBody {
+    padding: 12px;
+    gap: 16px;
+  }
+
+  .modalFooter {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}

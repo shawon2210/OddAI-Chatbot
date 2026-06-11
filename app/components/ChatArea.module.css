@@ -205,6 +205,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 4px 0;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .toolbarLeft {

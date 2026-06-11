@@ -89,3 +89,15 @@
     align-items: stretch;
   }
 }
+
+@media (max-width: 360px) {
+  .container {
+    padding: 16px;
+  }
+
+  .heading { font-size: 18px; }
+
+  .chip {
+    padding: 8px 12px;
+  }
+}
